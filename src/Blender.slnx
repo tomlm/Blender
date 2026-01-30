@@ -2,4 +2,5 @@
   <Project Path="Blender.Console/Blender.Console.csproj" />
   <Project Path="Blender.Desktop/Blender.Desktop.csproj" />
   <Project Path="Blender/Blender.csproj" />
+  <Project Path="DumpViewer/DumpViewer.csproj" />
 </Solution>

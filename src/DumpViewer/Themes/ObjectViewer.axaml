@@ -1,0 +1,99 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:dv="using:DumpViewer">
+
+    <Design.PreviewWith>
+        <Border Padding="20" Background="#1E1E1E">
+            <dv:ObjectViewer Value="Test String" />
+        </Border>
+    </Design.PreviewWith>
+
+    <!-- NodeView template -->
+    <Style Selector="dv|NodeView">
+        <Setter Property="Foreground" Value="#D4D4D4"/>
+        <Setter Property="FontFamily" Value="Consolas, Monaco, 'Courier New', monospace"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <StackPanel Orientation="Vertical" Margin="0,1">
+                    <!-- Node header row -->
+                    <StackPanel Orientation="Horizontal">
+                        <!-- Expand/collapse toggle -->
+                        <ToggleButton IsVisible="{Binding Node.IsExpandable, RelativeSource={RelativeSource TemplatedParent}}"
+                                      IsChecked="{Binding Node.IsExpanded, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                      Width="16" Height="16"
+                                      Padding="0" Margin="0,0,4,0"
+                                      Background="Transparent"
+                                      BorderThickness="0"
+                                      VerticalContentAlignment="Center"
+                                      HorizontalContentAlignment="Center">
+                            <Panel>
+                                <!-- Collapsed arrow (right-pointing) -->
+                                <TextBlock Text="?" 
+                                           FontSize="8"
+                                           Foreground="#D4D4D4"
+                                           IsVisible="{Binding !IsChecked, RelativeSource={RelativeSource AncestorType=ToggleButton}}"/>
+                                <!-- Expanded arrow (down-pointing) -->
+                                <TextBlock Text="?" 
+                                           FontSize="8"
+                                           Foreground="#D4D4D4"
+                                           IsVisible="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=ToggleButton}}"/>
+                            </Panel>
+                        </ToggleButton>
+                        
+                        <!-- Spacer when not expandable -->
+                        <Border Width="20" 
+                                IsVisible="{Binding !Node.IsExpandable, RelativeSource={RelativeSource TemplatedParent}}"/>
+                        
+                        <!-- Property name -->
+                        <TextBlock Text="{Binding Node.Name, RelativeSource={RelativeSource TemplatedParent}}"
+                                   IsVisible="{Binding Node.Name, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                   Foreground="#9CDCFE"
+                                   Margin="0,0,4,0"/>
+                        
+                        <TextBlock Text=": "
+                                   IsVisible="{Binding Node.Name, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                   Foreground="#D4D4D4"/>
+                        
+                        <!-- Type name for complex types -->
+                        <TextBlock Text="{Binding Node.TypeName, RelativeSource={RelativeSource TemplatedParent}}"
+                                   IsVisible="{Binding Node.HasChildren, RelativeSource={RelativeSource TemplatedParent}}"
+                                   Foreground="#4EC9B0"
+                                   Margin="0,0,4,0"/>
+                        
+                        <!-- Display value with color based on kind -->
+                        <TextBlock Text="{Binding Node.DisplayValue, RelativeSource={RelativeSource TemplatedParent}}"
+                                   Foreground="{Binding Node.Kind, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static dv:NodeKindToBrushConverter.Instance}}"
+                                   FontStyle="{Binding Node.Kind, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static dv:NodeKindToFontStyleConverter.Instance}}"/>
+                    </StackPanel>
+                    
+                    <!-- Children (indented) -->
+                    <ItemsControl ItemsSource="{Binding Node.Children, RelativeSource={RelativeSource TemplatedParent}}"
+                                  IsVisible="{Binding Node.IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
+                                  Margin="16,0,0,0">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="dv:ObjectNode">
+                                <dv:NodeView Node="{Binding}"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <!-- ObjectViewer template -->
+    <Style Selector="dv|ObjectViewer">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Auto">
+                    <Border Padding="8" Background="#1E1E1E">
+                        <dv:NodeView Node="{Binding RootNode, RelativeSource={RelativeSource TemplatedParent}}"/>
+                    </Border>
+                </ScrollViewer>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    
+</Styles>

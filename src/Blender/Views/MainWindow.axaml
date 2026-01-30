@@ -1,6 +1,7 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:Blender.ViewModels"
+        xmlns:dv="using:DumpViewer"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
@@ -26,7 +27,16 @@
             </MenuItem>
         </Menu>
         
-        <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <!-- Error display -->
+        <Border DockPanel.Dock="Top" 
+                Background="#442222" 
+                Padding="8"
+                IsVisible="{Binding HasError}">
+            <TextBlock Text="{Binding ErrorMessage}" Foreground="#FF6666"/>
+        </Border>
+        
+        <!-- Data visualization -->
+        <dv:ObjectViewer Value="{Binding Data}"/>
     </DockPanel>
 
 </Window>

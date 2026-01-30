@@ -6,5 +6,6 @@
 
     <Application.Styles>
         <FluentTheme />
+        <StyleInclude Source="avares://DumpViewer/Themes/ObjectViewer.axaml"/>
     </Application.Styles>
 </Application>
