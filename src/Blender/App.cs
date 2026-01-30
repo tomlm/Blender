@@ -34,10 +34,12 @@ namespace Blender
                     await mainViewModel.LoadFromStdinAsync(AppViewModel.Format);
                 }
 
-                desktopLifetime.MainWindow = new MainWindow
+                var mainWindow = new MainWindow
                 {
                     DataContext = mainViewModel
                 };
+                mainViewModel.Window = mainWindow;
+                desktopLifetime.MainWindow = mainWindow;
             }
 
             base.OnFrameworkInitializationCompleted();

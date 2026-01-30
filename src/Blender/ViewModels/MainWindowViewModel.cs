@@ -5,7 +5,12 @@ using System.IO;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using System.Xml;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CsvHelper;
 using YamlDotNet.RepresentationModel;
 
@@ -35,7 +40,60 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private object? _data;
 
+    /// <summary>
+    /// Gets or sets the window associated with this view model.
+    /// </summary>
+    public Window? Window { get; set; }
+
     public string Greeting { get; } = "Welcome to Avalonia!";
+
+    [RelayCommand]
+    private async Task OpenFileAsync()
+    {
+        if (Window == null)
+            return;
+
+        var storageProvider = Window.StorageProvider;
+        
+        var files = await storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "Open Data File",
+            AllowMultiple = false,
+            FileTypeFilter =
+            [
+                new FilePickerFileType("All Supported Files") { Patterns = ["*.json", "*.xml", "*.yml", "*.yaml", "*.csv"] },
+                new FilePickerFileType("JSON Files") { Patterns = ["*.json"] },
+                new FilePickerFileType("XML Files") { Patterns = ["*.xml"] },
+                new FilePickerFileType("YAML Files") { Patterns = ["*.yml", "*.yaml"] },
+                new FilePickerFileType("CSV Files") { Patterns = ["*.csv"] },
+                new FilePickerFileType("All Files") { Patterns = ["*"] }
+            ]
+        });
+
+        if (files.Count == 0)
+            return;
+
+        var file = files[0];
+        var filePath = file.Path.LocalPath;
+
+        // Create a new window with the selected file
+        var newViewModel = new MainWindowViewModel();
+        await newViewModel.LoadFromFileAsync(filePath);
+
+        var newWindow = new Blender.Views.MainWindow
+        {
+            DataContext = newViewModel
+        };
+        newViewModel.Window = newWindow;
+
+        newWindow.Show();
+    }
+
+    [RelayCommand]
+    private void CloseWindow()
+    {
+        Window?.Close();
+    }
 
     /// <summary>
     /// Loads data from a file path.
