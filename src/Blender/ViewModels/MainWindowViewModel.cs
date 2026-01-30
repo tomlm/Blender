@@ -16,6 +16,15 @@ using YamlDotNet.RepresentationModel;
 
 namespace Blender.ViewModels;
 
+/// <summary>
+/// The view mode for displaying data.
+/// </summary>
+public enum ViewMode
+{
+    Objects,
+    Raw
+}
+
 public partial class MainWindowViewModel : ViewModelBase
 {
     [ObservableProperty]
@@ -41,11 +50,39 @@ public partial class MainWindowViewModel : ViewModelBase
     private object? _data;
 
     /// <summary>
+    /// Gets or sets the current view mode.
+    /// </summary>
+    [ObservableProperty]
+    private ViewMode _viewMode = ViewMode.Objects;
+
+    /// <summary>
+    /// Gets whether the Objects view is active.
+    /// </summary>
+    public bool IsObjectsView => ViewMode == ViewMode.Objects;
+
+    /// <summary>
+    /// Gets whether the Raw view is active.
+    /// </summary>
+    public bool IsRawView => ViewMode == ViewMode.Raw;
+
+    partial void OnViewModeChanged(ViewMode value)
+    {
+        OnPropertyChanged(nameof(IsObjectsView));
+        OnPropertyChanged(nameof(IsRawView));
+    }
+
+    /// <summary>
     /// Gets or sets the window associated with this view model.
     /// </summary>
     public Window? Window { get; set; }
 
     public string Greeting { get; } = "Welcome to Avalonia!";
+
+    [RelayCommand]
+    private void ShowRawView() => ViewMode = ViewMode.Raw;
+
+    [RelayCommand]
+    private void ShowObjectsView() => ViewMode = ViewMode.Objects;
 
     [RelayCommand]
     private async Task OpenFileAsync()

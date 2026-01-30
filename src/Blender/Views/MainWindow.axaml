@@ -25,6 +25,20 @@
                 <Separator/>
                 <MenuItem Header="_Close" Command="{Binding CloseWindowCommand}" InputGesture="Ctrl+W"/>
             </MenuItem>
+            <MenuItem Header="_View">
+                <MenuItem Header="_Raw" Command="{Binding ShowRawViewCommand}" InputGesture="Ctrl+R">
+                    <MenuItem.Icon>
+                        <CheckBox IsChecked="{Binding IsRawView, Mode=OneWay}" 
+                                  BorderThickness="0" IsHitTestVisible="False"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="_Objects" Command="{Binding ShowObjectsViewCommand}" InputGesture="Ctrl+D">
+                    <MenuItem.Icon>
+                        <CheckBox IsChecked="{Binding IsObjectsView, Mode=OneWay}" 
+                                  BorderThickness="0" IsHitTestVisible="False"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
         </Menu>
         
         <!-- Error display -->
@@ -35,8 +49,24 @@
             <TextBlock Text="{Binding ErrorMessage}" Foreground="#FF6666"/>
         </Border>
         
-        <!-- Data visualization -->
-        <dv:ObjectViewer Value="{Binding Data}"/>
+        <!-- Raw text view -->
+        <ScrollViewer IsVisible="{Binding IsRawView}"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto">
+            <TextBox Text="{Binding InputData, Mode=OneWay}"
+                     IsReadOnly="True"
+                     AcceptsReturn="True"
+                     FontFamily="Consolas, Monaco, 'Courier New', monospace"
+                     FontSize="13"
+                     Background="#1E1E1E"
+                     Foreground="#D4D4D4"
+                     BorderThickness="0"
+                     Padding="8"/>
+        </ScrollViewer>
+        
+        <!-- Object viewer -->
+        <dv:ObjectViewer Value="{Binding Data}" 
+                         IsVisible="{Binding IsObjectsView}"/>
     </DockPanel>
 
 </Window>
