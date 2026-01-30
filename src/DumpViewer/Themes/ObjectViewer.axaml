@@ -17,55 +17,61 @@
             <ControlTemplate>
                 <StackPanel Orientation="Vertical" Margin="0,1">
                     <!-- Node header row -->
-                    <StackPanel Orientation="Horizontal">
-                        <!-- Expand/collapse toggle -->
-                        <ToggleButton IsVisible="{Binding Node.IsExpandable, RelativeSource={RelativeSource TemplatedParent}}"
-                                      IsChecked="{Binding Node.IsExpanded, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
-                                      Width="16" Height="16"
-                                      Padding="0" Margin="0,0,4,0"
-                                      Background="Transparent"
-                                      BorderThickness="0"
-                                      VerticalContentAlignment="Center"
-                                      HorizontalContentAlignment="Center">
-                            <Panel>
-                                <!-- Collapsed arrow (right-pointing) -->
-                                <TextBlock Text="?" 
-                                           FontSize="8"
-                                           Foreground="#D4D4D4"
-                                           IsVisible="{Binding !IsChecked, RelativeSource={RelativeSource AncestorType=ToggleButton}}"/>
-                                <!-- Expanded arrow (down-pointing) -->
-                                <TextBlock Text="?" 
-                                           FontSize="8"
-                                           Foreground="#D4D4D4"
-                                           IsVisible="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=ToggleButton}}"/>
-                            </Panel>
-                        </ToggleButton>
-                        
-                        <!-- Spacer when not expandable -->
-                        <Border Width="20" 
-                                IsVisible="{Binding !Node.IsExpandable, RelativeSource={RelativeSource TemplatedParent}}"/>
-                        
-                        <!-- Property name -->
-                        <TextBlock Text="{Binding Node.Name, RelativeSource={RelativeSource TemplatedParent}}"
-                                   IsVisible="{Binding Node.Name, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                                   Foreground="#9CDCFE"
-                                   Margin="0,0,4,0"/>
-                        
-                        <TextBlock Text=": "
-                                   IsVisible="{Binding Node.Name, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                                   Foreground="#D4D4D4"/>
-                        
-                        <!-- Type name for complex types -->
-                        <TextBlock Text="{Binding Node.TypeName, RelativeSource={RelativeSource TemplatedParent}}"
-                                   IsVisible="{Binding Node.HasChildren, RelativeSource={RelativeSource TemplatedParent}}"
-                                   Foreground="#4EC9B0"
-                                   Margin="0,0,4,0"/>
-                        
-                        <!-- Display value with color based on kind -->
-                        <TextBlock Text="{Binding Node.DisplayValue, RelativeSource={RelativeSource TemplatedParent}}"
-                                   Foreground="{Binding Node.Kind, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static dv:NodeKindToBrushConverter.Instance}}"
-                                   FontStyle="{Binding Node.Kind, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static dv:NodeKindToFontStyleConverter.Instance}}"/>
-                    </StackPanel>
+                    <Border x:Name="HeaderBorder" 
+                            Background="Transparent"
+                            CornerRadius="2"
+                            Padding="2,1">
+                        <StackPanel Orientation="Horizontal">
+                            <!-- Expand/collapse toggle -->
+                            <ToggleButton IsVisible="{Binding Node.IsExpandable, RelativeSource={RelativeSource TemplatedParent}}"
+                                          IsChecked="{Binding Node.IsExpanded, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                          Width="16" Height="16"
+                                          Padding="0" Margin="0,0,4,0"
+                                          Background="Transparent"
+                                          BorderThickness="0"
+                                          Focusable="False"
+                                          VerticalContentAlignment="Center"
+                                          HorizontalContentAlignment="Center">
+                                <Panel>
+                                    <!-- Collapsed arrow (right-pointing) -->
+                                    <TextBlock Text="?" 
+                                               FontSize="8"
+                                               Foreground="#D4D4D4"
+                                               IsVisible="{Binding !IsChecked, RelativeSource={RelativeSource AncestorType=ToggleButton}}"/>
+                                    <!-- Expanded arrow (down-pointing) -->
+                                    <TextBlock Text="?" 
+                                               FontSize="8"
+                                               Foreground="#D4D4D4"
+                                               IsVisible="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=ToggleButton}}"/>
+                                </Panel>
+                            </ToggleButton>
+                            
+                            <!-- Spacer when not expandable -->
+                            <Border Width="20" 
+                                    IsVisible="{Binding !Node.IsExpandable, RelativeSource={RelativeSource TemplatedParent}}"/>
+                            
+                            <!-- Property name -->
+                            <TextBlock Text="{Binding Node.Name, RelativeSource={RelativeSource TemplatedParent}}"
+                                       IsVisible="{Binding Node.Name, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                       Foreground="#9CDCFE"
+                                       Margin="0,0,4,0"/>
+                            
+                            <TextBlock Text=": "
+                                       IsVisible="{Binding Node.Name, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                       Foreground="#D4D4D4"/>
+                            
+                            <!-- Type name for complex types -->
+                            <TextBlock Text="{Binding Node.TypeName, RelativeSource={RelativeSource TemplatedParent}}"
+                                       IsVisible="{Binding Node.HasChildren, RelativeSource={RelativeSource TemplatedParent}}"
+                                       Foreground="#4EC9B0"
+                                       Margin="0,0,4,0"/>
+                            
+                            <!-- Display value with color based on kind -->
+                            <TextBlock Text="{Binding Node.DisplayValue, RelativeSource={RelativeSource TemplatedParent}}"
+                                       Foreground="{Binding Node.Kind, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static dv:NodeKindToBrushConverter.Instance}}"
+                                       FontStyle="{Binding Node.Kind, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static dv:NodeKindToFontStyleConverter.Instance}}"/>
+                        </StackPanel>
+                    </Border>
                     
                     <!-- Children (indented) -->
                     <ItemsControl ItemsSource="{Binding Node.Children, RelativeSource={RelativeSource TemplatedParent}}"
@@ -80,6 +86,19 @@
                 </StackPanel>
             </ControlTemplate>
         </Setter>
+    </Style>
+    
+    <!-- Focus styling for NodeView -->
+    <Style Selector="dv|NodeView:focus /template/ Border#HeaderBorder">
+        <Setter Property="Background" Value="#264F78"/>
+    </Style>
+    
+    <Style Selector="dv|NodeView:focus-within /template/ Border#HeaderBorder">
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+    
+    <Style Selector="dv|NodeView:focus:focus-within /template/ Border#HeaderBorder">
+        <Setter Property="Background" Value="#264F78"/>
     </Style>
 
     <!-- ObjectViewer template -->
