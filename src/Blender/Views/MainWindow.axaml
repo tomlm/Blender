@@ -14,6 +14,7 @@
 
 <Window.KeyBindings>
     <KeyBinding Gesture="Ctrl+O" Command="{Binding OpenFileCommand}"/>
+    <KeyBinding Gesture="Alt+F4" Command="{Binding CloseWindowCommand}"/>
     <KeyBinding Gesture="Ctrl+W" Command="{Binding CloseWindowCommand}"/>
     <KeyBinding Gesture="Ctrl+R" Command="{Binding ShowRawViewCommand}"/>
     <KeyBinding Gesture="Ctrl+D" Command="{Binding ShowObjectsViewCommand}"/>
@@ -30,7 +31,7 @@
             <MenuItem Header="_File">
                 <MenuItem Header="_Open..." Command="{Binding OpenFileCommand}" InputGesture="Ctrl+O"/>
                 <Separator/>
-                <MenuItem Header="_Close" Command="{Binding CloseWindowCommand}" InputGesture="Ctrl+W"/>
+                <MenuItem Header="E_xit" Command="{Binding CloseWindowCommand}" InputGesture="Ctrl+W"/>
             </MenuItem>
             <MenuItem Header="_View">
                 <MenuItem Header="_Raw" Command="{Binding ShowRawViewCommand}" InputGesture="Ctrl+R">
