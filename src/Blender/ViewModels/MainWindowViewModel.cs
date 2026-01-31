@@ -5,13 +5,12 @@ using System.IO;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using System.Xml;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CsvHelper;
+using ObjectSearch;
 using YamlDotNet.RepresentationModel;
 
 namespace Blender.ViewModels;
@@ -27,6 +26,8 @@ public enum ViewMode
 
 public partial class MainWindowViewModel : ViewModelBase
 {
+    private ObjectSearchEngine _dataSearch = new ObjectSearchEngine();
+
     [ObservableProperty]
     private string? _filePath;
 
@@ -49,6 +50,12 @@ public partial class MainWindowViewModel : ViewModelBase
     /// </summary>
     [ObservableProperty]
     private object? _data;
+
+    [ObservableProperty]
+    private string _searchText = String.Empty;
+
+    [ObservableProperty]
+    private IEnumerable<object>? _filteredData;
 
     /// <summary>
     /// Gets whether there is data loaded to display.
