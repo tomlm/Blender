@@ -3,6 +3,12 @@
              xmlns:console="https://github.com/jinek/consolonia"
              x:Class="Blender.Console.App"
              RequestedThemeVariant="Default">
+    <Application.Resources>
+        <!-- Console-specific layout adjustments -->
+        <Thickness x:Key="ObjectViewerPadding">0</Thickness>
+        <x:Double x:Key="ObjectViewerFontSize">1</x:Double>
+        <Thickness x:Key="ObjectViewerItemSpacing">0</Thickness>
+    </Application.Resources>
     <Application.Styles>
         <console:ModernTheme />
         <StyleInclude Source="avares://DumpViewer/Themes/ObjectViewer.axaml"/>

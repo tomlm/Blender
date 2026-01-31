@@ -8,11 +8,18 @@
         </Border>
     </Design.PreviewWith>
 
+    <!-- Default layout resources (can be overridden in App.axaml) -->
+    <Styles.Resources>
+        <Thickness x:Key="ObjectViewerPadding">8</Thickness>
+        <x:Double x:Key="ObjectViewerFontSize">13</x:Double>
+        <Thickness x:Key="ObjectViewerItemSpacing">0,0,4,0</Thickness>
+    </Styles.Resources>
+
     <!-- ObjectViewer template using TreeView -->
     <Style Selector="dv|ObjectViewer">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Padding="8" Background="#1E1E1E">
+                <Border Padding="{DynamicResource ObjectViewerPadding}" Background="#1E1E1E">
                     <TreeView ItemsSource="{Binding Items, RelativeSource={RelativeSource TemplatedParent}}"
                               Background="Transparent">
                         <TreeView.Styles>
@@ -20,7 +27,7 @@
                                 <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
                                 <Setter Property="Foreground" Value="#D4D4D4"/>
                                 <Setter Property="FontFamily" Value="Consolas, Monaco, 'Courier New', monospace"/>
-                                <Setter Property="FontSize" Value="13"/>
+                                <Setter Property="FontSize" Value="{DynamicResource ObjectViewerFontSize}"/>
                             </Style>
                         </TreeView.Styles>
                         <TreeView.ItemTemplate>
@@ -30,7 +37,7 @@
                                     <TextBlock Text="{Binding Name}"
                                                IsVisible="{Binding Name, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                                                Foreground="#9CDCFE"
-                                               Margin="0,0,4,0"/>
+                                               Margin="{DynamicResource ObjectViewerItemSpacing}"/>
                                     
                                     <TextBlock Text=": "
                                                IsVisible="{Binding Name, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
@@ -40,7 +47,7 @@
                                     <TextBlock Text="{Binding TypeName}"
                                                IsVisible="{Binding HasChildren}"
                                                Foreground="#4EC9B0"
-                                               Margin="0,0,4,0"/>
+                                               Margin="{DynamicResource ObjectViewerItemSpacing}"/>
                                     
                                     <!-- Display value with color based on kind -->
                                     <TextBlock Text="{Binding DisplayValue}"

@@ -4,6 +4,12 @@
              RequestedThemeVariant="Default">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
+    <Application.Resources>
+        <!-- Desktop-specific layout adjustments -->
+        <Thickness x:Key="ObjectViewerPadding">8</Thickness>
+        <x:Double x:Key="ObjectViewerFontSize">13</x:Double>
+        <Thickness x:Key="ObjectViewerItemSpacing">0,0,4,0</Thickness>
+    </Application.Resources>
     <Application.Styles>
         <FluentTheme />
         <StyleInclude Source="avares://DumpViewer/Themes/ObjectViewer.axaml"/>
