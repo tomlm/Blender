@@ -4,6 +4,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.Threading;
 using AvaloniaEdit;
 using AvaloniaEdit.Document;
 using AvaloniaEdit.Highlighting;
@@ -163,6 +164,7 @@ public class ObjectViewer : TemplatedControl
         {
             _listBox.SelectionChanged -= OnListBoxSelectionChanged;
             _listBox.DoubleTapped -= OnListBoxDoubleTapped;
+            _listBox.RemoveHandler(KeyDownEvent, OnListBoxKeyDown);
         }
         if (_textEditor != null)
         {
@@ -188,6 +190,7 @@ public class ObjectViewer : TemplatedControl
         {
             _listBox.SelectionChanged += OnListBoxSelectionChanged;
             _listBox.DoubleTapped += OnListBoxDoubleTapped;
+            _listBox.AddHandler(KeyDownEvent, OnListBoxKeyDown, RoutingStrategies.Tunnel);
         }
         if (_textEditor != null)
         {
@@ -202,9 +205,81 @@ public class ObjectViewer : TemplatedControl
         // Toggle expand/collapse on double-click
         if (_listBox?.SelectedItem is FlattenedNode flatNode && flatNode.CanExpand)
         {
+            var nodeToRestore = flatNode.Node;
             flatNode.Node.IsExpanded = !flatNode.Node.IsExpanded;
             _flattenedItems.OnNodeExpandedChanged(flatNode.Node);
+            RestoreSelectionAndFocus(nodeToRestore);
         }
+    }
+
+    private void OnListBoxKeyDown(object? sender, KeyEventArgs e)
+    {
+        if (_listBox?.SelectedItem is not FlattenedNode flatNode)
+            return;
+
+        bool handled = false;
+        var nodeToSelect = flatNode.Node;
+
+        if (e.Key == Key.Right && flatNode.CanExpand && !flatNode.IsExpanded)
+        {
+            // Right arrow expands a collapsed node
+            flatNode.Node.IsExpanded = true;
+            _flattenedItems.OnNodeExpandedChanged(flatNode.Node);
+            handled = true;
+        }
+        else if (e.Key == Key.Left && flatNode.CanExpand && flatNode.IsExpanded)
+        {
+            // Left arrow collapses an expanded node
+            flatNode.Node.IsExpanded = false;
+            _flattenedItems.OnNodeExpandedChanged(flatNode.Node);
+            handled = true;
+        }
+        else if ((e.Key == Key.Enter || e.Key == Key.Space) && flatNode.CanExpand)
+        {
+            // Enter or Space toggles expand/collapse
+            flatNode.Node.IsExpanded = !flatNode.Node.IsExpanded;
+            _flattenedItems.OnNodeExpandedChanged(flatNode.Node);
+            handled = true;
+        }
+
+        if (handled)
+        {
+            e.Handled = true;
+            RestoreSelectionAndFocus(nodeToSelect);
+        }
+    }
+
+    /// <summary>
+    /// Restores selection and focus to a specific node after the collection has been reset.
+    /// </summary>
+    private void RestoreSelectionAndFocus(ObjectNode node)
+    {
+        // Schedule restoration after the layout pass completes
+        Dispatcher.UIThread.Post(() =>
+        {
+            if (_listBox == null) return;
+
+            // Find the node's new index in the flattened collection
+            var index = _flattenedItems.IndexOfNode(node);
+            if (index >= 0)
+            {
+                _listBox.SelectedIndex = index;
+                _listBox.ScrollIntoView(index);
+
+                // Try to focus the actual ListBoxItem container for more reliable focus
+                Dispatcher.UIThread.Post(() =>
+                {
+                    if (_listBox.ContainerFromIndex(index) is ListBoxItem item)
+                    {
+                        item.Focus();
+                    }
+                    else
+                    {
+                        _listBox.Focus();
+                    }
+                }, DispatcherPriority.Input);
+            }
+        }, DispatcherPriority.Loaded);
     }
 
     private void OnListBoxSelectionChanged(object? sender, SelectionChangedEventArgs e)
@@ -557,25 +632,6 @@ public class ObjectViewer : TemplatedControl
         if (e.Key == Key.F && e.KeyModifiers.HasFlag(KeyModifiers.Control))
         {
             _searchTextBox?.Focus();
-            e.Handled = true;
-        }
-        
-        // Handle Enter/Space to toggle expand on selected item
-        if ((e.Key == Key.Enter || e.Key == Key.Space) && _listBox?.SelectedItem is FlattenedNode flatNode && flatNode.CanExpand)
-        {
-            ToggleNode(flatNode.Node);
-            e.Handled = true;
-        }
-        
-        // Handle Left/Right arrows for collapse/expand
-        if (e.Key == Key.Right && _listBox?.SelectedItem is FlattenedNode rightNode && rightNode.CanExpand && !rightNode.IsExpanded)
-        {
-            ToggleNode(rightNode.Node);
-            e.Handled = true;
-        }
-        if (e.Key == Key.Left && _listBox?.SelectedItem is FlattenedNode leftNode && leftNode.CanExpand && leftNode.IsExpanded)
-        {
-            ToggleNode(leftNode.Node);
             e.Handled = true;
         }
     }

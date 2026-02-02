@@ -40,7 +40,7 @@ public class FlattenedNode
     /// <summary>
     /// Gets the expand/collapse icon based on state.
     /// </summary>
-    public string ExpandIcon => !CanExpand ? "   " : (IsExpanded ? "? " : "? ");
+    public string ExpandIcon => !CanExpand ? "   " : (IsExpanded ? "- " : "+ ");
 
     // Forward properties from ObjectNode for binding
     public string? Name => Node.Name;
