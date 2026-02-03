@@ -19,6 +19,11 @@ public class VirtualizedObjectCollection : IList<FlattenedNode>, IList, INotifyC
     private bool _countDirty = true;
 
     /// <summary>
+    /// Gets the root nodes for direct tree traversal.
+    /// </summary>
+    public IReadOnlyList<ObjectNode> RootNodes => _rootNodes;
+
+    /// <summary>
     /// Occurs when the collection changes.
     /// </summary>
     public event NotifyCollectionChangedEventHandler? CollectionChanged;
@@ -205,37 +210,42 @@ public class VirtualizedObjectCollection : IList<FlattenedNode>, IList, INotifyC
     }
 
     /// <summary>
-    /// Finds a node that contains the specified source line number.
-    /// Searches directly through the node tree without going through the virtualized indexer.
+    /// Finds the node with the largest StartLine that is less than or equal to the specified line.
+    /// Searches the entire tree regardless of expansion state.
     /// </summary>
     public ObjectNode? FindNodeByLine(int line)
     {
+        ObjectNode? bestMatch = null;
+        int bestStartLine = int.MinValue;
+
         foreach (var root in _rootNodes)
         {
-            var result = FindNodeByLineRecursive(root, line);
-            if (result != null)
-                return result;
+            FindNodeByLineRecursive(root, line, ref bestMatch, ref bestStartLine);
         }
-        return null;
+        return bestMatch;
     }
 
-    private static ObjectNode? FindNodeByLineRecursive(ObjectNode node, int line)
+    private static void FindNodeByLineRecursive(ObjectNode node, int targetLine, ref ObjectNode? bestMatch, ref int bestStartLine)
     {
-        if (node.HasSourceLocation && node.StartLine <= line && (node.EndLine ?? node.StartLine) >= line)
+        // Check if this node is a better match (larger StartLine that's still <= targetLine)
+        if (node.HasSourceLocation && node.StartLine.HasValue)
         {
-            // This node contains the line, but check if a child is more specific
-            if (node.IsExpanded && node.HasChildren)
+            int startLine = node.StartLine.Value;
+            if (startLine <= targetLine && startLine > bestStartLine)
             {
-                foreach (var child in node.Children)
-                {
-                    var childMatch = FindNodeByLineRecursive(child, line);
-                    if (childMatch != null)
-                        return childMatch;
-                }
+                bestMatch = node;
+                bestStartLine = startLine;
             }
-            return node;
         }
-        return null;
+
+        // Always search children for potentially better matches
+        if (node.HasChildren)
+        {
+            foreach (var child in node.Children)
+            {
+                FindNodeByLineRecursive(child, targetLine, ref bestMatch, ref bestStartLine);
+            }
+        }
     }
 
     /// <summary>

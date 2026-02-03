@@ -485,11 +485,12 @@ public class ObjectViewer : TemplatedControl
 
     private void ExpandToNode(ObjectNode targetNode)
     {
-        // Expand all ancestors - we need to search from roots
+        // Expand all ancestors by searching from the root nodes directly
+        // (not through the flattened collection, which only contains visible nodes)
         bool changed = false;
-        foreach (var flatNode in _flattenedItems)
+        foreach (var rootNode in _flattenedItems.RootNodes)
         {
-            if (ExpandAncestorsRecursive(flatNode.Node, targetNode, ref changed))
+            if (ExpandAncestorsRecursive(rootNode, targetNode, ref changed))
                 break;
         }
         if (changed)
