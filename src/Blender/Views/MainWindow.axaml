@@ -33,20 +33,6 @@
                 <Separator/>
                 <MenuItem Header="E_xit" Command="{Binding CloseWindowCommand}" InputGesture="Ctrl+W"/>
             </MenuItem>
-            <MenuItem Header="_View">
-                <MenuItem Header="_Raw" Command="{Binding ShowRawViewCommand}" InputGesture="Ctrl+R">
-                    <MenuItem.Icon>
-                        <CheckBox IsChecked="{Binding IsRawView, Mode=OneWay}" 
-                                  BorderThickness="0" IsHitTestVisible="False"/>
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="_Objects" Command="{Binding ShowObjectsViewCommand}" InputGesture="Ctrl+D">
-                    <MenuItem.Icon>
-                        <CheckBox IsChecked="{Binding IsObjectsView, Mode=OneWay}" 
-                                  BorderThickness="0" IsHitTestVisible="False"/>
-                    </MenuItem.Icon>
-                </MenuItem>
-            </MenuItem>
         </Menu>
         
         <!-- Error display -->
@@ -56,32 +42,6 @@
             <TextBlock Text="{Binding ErrorMessage}" Foreground="#FF6666"/>
         </Border>
         
-        
-        <!-- Raw text view -->
-        <ScrollViewer 
-                      HorizontalScrollBarVisibility="Auto"
-                      VerticalScrollBarVisibility="Auto">
-            <ScrollViewer.IsVisible>
-                <MultiBinding Converter="{x:Static BoolConverters.And}">
-                    <Binding Path="IsRawView"/>
-                    <Binding Path="HasData"/>
-                </MultiBinding>
-            </ScrollViewer.IsVisible>
-            <TextBox Text="{Binding InputData, Mode=OneWay}"
-                     IsReadOnly="True"
-                     AcceptsReturn="True"
-                     FontFamily="Consolas, Monaco, 'Courier New', monospace"
-                     FontSize="{DynamicResource RawTextFontSize}"
-                     BorderThickness="{DynamicResource RawTextBorderThickness}"
-                     Padding="{DynamicResource RawTextPadding}">
-                <TextBox.Background>
-                    <SolidColorBrush Color="{DynamicResource RawTextBackground}"/>
-                </TextBox.Background>
-                <TextBox.Foreground>
-                    <SolidColorBrush Color="{DynamicResource RawTextForeground}"/>
-                </TextBox.Foreground>
-            </TextBox>
-        </ScrollViewer>
         
         <!-- Object viewer -->
         <dv:ObjectViewer Value="{Binding Data}" 

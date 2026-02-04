@@ -60,10 +60,10 @@ public static class SyntaxHighlightingManager
         
         return formatName?.ToLowerInvariant() switch
         {
-            "json" => HighlightingManager.Instance.GetDefinition("JSON"),
-            "yaml" or "yml" => HighlightingManager.Instance.GetDefinition("YAML"),
+            "json" => HighlightingManager.Instance.GetDefinition("Json"),
+            "yaml" or "yml" => HighlightingManager.Instance.GetDefinition("Yaml"),
             "xml" => HighlightingManager.Instance.GetDefinition("XML"),
-            "csv" => HighlightingManager.Instance.GetDefinition("CSV"),
+            "csv" => HighlightingManager.Instance.GetDefinition("Csv"),
             _ => null
         };
     }

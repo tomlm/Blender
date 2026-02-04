@@ -9,6 +9,7 @@
     
     <ItemGroup>
         <PackageReference Include="Consolonia" Version="11.3.*-beta.*" />
+        <PackageReference Include="Consolonia.AvaloniaEdit" Version="11.3.7-beta.2027" />
     </ItemGroup>
     
     <ItemGroup>

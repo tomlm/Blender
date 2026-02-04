@@ -8,6 +8,7 @@ using Avalonia.Threading;
 using AvaloniaEdit;
 using AvaloniaEdit.Document;
 using AvaloniaEdit.Highlighting;
+using Humanizer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -325,7 +326,7 @@ public class ObjectViewer : TemplatedControl
 
             // Apply syntax highlighting only for reasonably sized files
             // Large files cause regex-based highlighting to hang
-            const int MaxHighlightingLength = 500_000; // 500KB max for syntax highlighting
+            const int MaxHighlightingLength = 1_000_000; 
             IHighlightingDefinition? highlighting = null;
             
             if (text.Length <= MaxHighlightingLength)

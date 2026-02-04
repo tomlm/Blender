@@ -10,11 +10,6 @@
 		<Color x:Key="ErrorBorderBackground">#442222</Color>
 		<Thickness x:Key="ErrorBorderPadding">1</Thickness>
 		<Color x:Key="ErrorTextForeground">#FF6666</Color>
-		<x:Double x:Key="RawTextFontSize">1</x:Double>
-		<Color x:Key="RawTextBackground">#1E1E1E</Color>
-		<Color x:Key="RawTextForeground">#D4D4D4</Color>
-		<Thickness x:Key="RawTextPadding">1</Thickness>
-		<Thickness x:Key="RawTextBorderThickness">0</Thickness>
 
 		<!-- ObjectViewer layout -->
 		<Thickness x:Key="ObjectViewerPadding">0</Thickness>
@@ -52,6 +47,7 @@
 	</Application.Resources>
 	<Application.Styles>
 		<console:ModernTheme />
+		<StyleInclude Source="avares://Consolonia.AvaloniaEdit/Theme.axaml" />
 		<StyleInclude Source="avares://ObjectViewer/Themes/ObjectViewer.axaml"/>
 	</Application.Styles>
 </Application>
