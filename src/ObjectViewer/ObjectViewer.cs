@@ -8,10 +8,9 @@ using Avalonia.Threading;
 using AvaloniaEdit;
 using AvaloniaEdit.Document;
 using AvaloniaEdit.Highlighting;
-using Humanizer;
+using AvaloniaEdit.TextMate;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using TextMateSharp.Grammars;
 
 namespace DumpViewer;
 
@@ -24,6 +23,8 @@ public class ObjectViewer : TemplatedControl
 {
     private ListBox? _listBox;
     private TextEditor? _textEditor;
+    private RegistryOptions? _registryOptions;
+    private TextMate.Installation? _textmate;
     private bool _isSyncingFromTree;
     private bool _isSyncingFromEditor;
 
@@ -298,6 +299,9 @@ public class ObjectViewer : TemplatedControl
         _textEditor.FontSize = 13;
         _textEditor.Background = Brushes.Transparent;
         _textEditor.Foreground = new SolidColorBrush(Color.Parse("#D4D4D4"));
+
+        _registryOptions = new RegistryOptions(ThemeName.DarkPlus);
+        _textmate = _textEditor.InstallTextMate(_registryOptions);
     }
 
 
@@ -312,32 +316,20 @@ public class ObjectViewer : TemplatedControl
         {
             // Set text content using Document for proper rendering
             var text = SourceText ?? string.Empty;
-            
+
             // Check for very long lines that would cause rendering issues
             // AvaloniaEdit struggles with lines that are millions of characters
             text = EnsureReasonableLineLength(text);
-            
+
             System.Diagnostics.Debug.WriteLine($"[ObjectViewer] Setting document text: {text.Length} chars, {text.Split('\n').Length} lines");
-            
+
             // Always create a fresh document to avoid rendering issues
             _textEditor.Document = new TextDocument(text);
-            
+
             System.Diagnostics.Debug.WriteLine($"[ObjectViewer] Document created: LineCount={_textEditor.Document.LineCount}");
 
-            // Apply syntax highlighting only for reasonably sized files
-            // Large files cause regex-based highlighting to hang
-            const int MaxHighlightingLength = 1_000_000; 
-            IHighlightingDefinition? highlighting = null;
-            
-            if (text.Length <= MaxHighlightingLength)
-            {
-                highlighting = SyntaxHighlightingManager.GetHighlightingForFormat(SyntaxHighlighting);
-            }
-            
-            if (_textEditor.SyntaxHighlighting != highlighting)
-            {
-                _textEditor.SyntaxHighlighting = highlighting;
-            }
+            if (_textmate != null && _registryOptions != null)
+                _textmate.SetGrammar(_registryOptions.GetScopeByLanguageId(SyntaxHighlighting));
         }
         finally
         {
@@ -353,11 +345,11 @@ public class ObjectViewer : TemplatedControl
     {
         const int MaxLineLength = 10_000; // 10K chars max per line
         const int MaxTotalLength = 10_000_000; // 10MB max total
-        
+
         // Quick check - if text is small, no need to process
         if (text.Length <= MaxLineLength)
             return text;
-        
+
         // Check if any line exceeds the max
         var lines = text.Split('\n');
         bool hasLongLine = false;
@@ -369,10 +361,10 @@ public class ObjectViewer : TemplatedControl
                 break;
             }
         }
-        
+
         if (!hasLongLine)
             return text;
-        
+
         // Try to format XML if it looks like XML
         if (SyntaxHighlighting == "xml" && text.TrimStart().StartsWith('<'))
         {
@@ -380,15 +372,15 @@ public class ObjectViewer : TemplatedControl
             {
                 var doc = new System.Xml.XmlDocument();
                 doc.LoadXml(text);
-                
+
                 using var sw = new System.IO.StringWriter();
                 using var xw = new System.Xml.XmlTextWriter(sw);
                 xw.Formatting = System.Xml.Formatting.Indented;
                 xw.Indentation = 2;
                 doc.WriteTo(xw);
-                
+
                 var formatted = sw.ToString();
-                
+
                 // Only use formatted if it's not too large
                 if (formatted.Length <= MaxTotalLength)
                 {
@@ -401,7 +393,7 @@ public class ObjectViewer : TemplatedControl
                 // If formatting fails, fall through to truncation
             }
         }
-        
+
         // Try to format JSON if it looks like JSON
         if (SyntaxHighlighting == "json" && (text.TrimStart().StartsWith('{') || text.TrimStart().StartsWith('[')))
         {
@@ -409,7 +401,7 @@ public class ObjectViewer : TemplatedControl
             {
                 var obj = Newtonsoft.Json.Linq.JToken.Parse(text);
                 var formatted = obj.ToString(Newtonsoft.Json.Formatting.Indented);
-                
+
                 if (formatted.Length <= MaxTotalLength)
                 {
                     System.Diagnostics.Debug.WriteLine($"[ObjectViewer] Formatted JSON: {text.Length} -> {formatted.Length} chars");
@@ -421,7 +413,7 @@ public class ObjectViewer : TemplatedControl
                 // If formatting fails, fall through to truncation
             }
         }
-        
+
         // If formatting didn't work, truncate long lines
         var result = new System.Text.StringBuilder();
         foreach (var line in lines)
@@ -434,7 +426,7 @@ public class ObjectViewer : TemplatedControl
             {
                 result.AppendLine(line);
             }
-            
+
             // Stop if result is too large
             if (result.Length > MaxTotalLength)
             {
@@ -442,7 +434,7 @@ public class ObjectViewer : TemplatedControl
                 break;
             }
         }
-        
+
         return result.ToString();
     }
 
@@ -528,7 +520,7 @@ public class ObjectViewer : TemplatedControl
     private void SelectNodeInListBox(ObjectNode node)
     {
         if (_listBox == null) return;
-        
+
         var index = _flattenedItems.IndexOfNode(node);
         if (index >= 0 && index < _flattenedItems.Count)
         {
@@ -571,7 +563,7 @@ public class ObjectViewer : TemplatedControl
             try
             {
 
-//                _textEditor.TextArea.Selection = Selection.Create(_textEditor.TextArea, startOffset, endOffset);
+                //                _textEditor.TextArea.Selection = Selection.Create(_textEditor.TextArea, startOffset, endOffset);
                 _textEditor.TextArea.Caret.Offset = startOffset;
 
                 // Scroll to make the line visible
