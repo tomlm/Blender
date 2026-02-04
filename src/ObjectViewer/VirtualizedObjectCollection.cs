@@ -19,6 +19,11 @@ public class VirtualizedObjectCollection : IList<FlattenedNode>, IList, INotifyC
     private bool _countDirty = true;
 
     /// <summary>
+    /// Gets or sets the indent size in pixels per depth level.
+    /// </summary>
+    public double IndentSize { get; set; } = 16;
+
+    /// <summary>
     /// Gets the root nodes for direct tree traversal.
     /// </summary>
     public IReadOnlyList<ObjectNode> RootNodes => _rootNodes;
@@ -179,7 +184,7 @@ public class VirtualizedObjectCollection : IList<FlattenedNode>, IList, INotifyC
         return null;
     }
 
-    private static FlattenedNode? FindNodeAtIndex(ObjectNode node, int depth, int targetIndex, ref int currentIndex)
+    private FlattenedNode? FindNodeAtIndex(ObjectNode node, int depth, int targetIndex, ref int currentIndex)
     {
         // Early exit - we've already passed the target index
         if (currentIndex > targetIndex)
@@ -187,7 +192,7 @@ public class VirtualizedObjectCollection : IList<FlattenedNode>, IList, INotifyC
 
         if (currentIndex == targetIndex)
         {
-            return new FlattenedNode(node, depth);
+            return new FlattenedNode(node, depth, IndentSize);
         }
 
         currentIndex++;

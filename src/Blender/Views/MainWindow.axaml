@@ -51,8 +51,7 @@
         
         <!-- Error display -->
         <Border DockPanel.Dock="Top" 
-                Background="#442222" 
-                Padding="8"
+                Padding="{DynamicResource ErrorBorderPadding}"
                 IsVisible="{Binding HasError}">
             <TextBlock Text="{Binding ErrorMessage}" Foreground="#FF6666"/>
         </Border>
@@ -72,11 +71,16 @@
                      IsReadOnly="True"
                      AcceptsReturn="True"
                      FontFamily="Consolas, Monaco, 'Courier New', monospace"
-                     FontSize="13"
-                     Background="#1E1E1E"
-                     Foreground="#D4D4D4"
-                     BorderThickness="0"
-                     Padding="8"/>
+                     FontSize="{DynamicResource RawTextFontSize}"
+                     BorderThickness="{DynamicResource RawTextBorderThickness}"
+                     Padding="{DynamicResource RawTextPadding}">
+                <TextBox.Background>
+                    <SolidColorBrush Color="{DynamicResource RawTextBackground}"/>
+                </TextBox.Background>
+                <TextBox.Foreground>
+                    <SolidColorBrush Color="{DynamicResource RawTextForeground}"/>
+                </TextBox.Foreground>
+            </TextBox>
         </ScrollViewer>
         
         <!-- Object viewer -->

@@ -1,18 +1,58 @@
 <Application xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="Blender.Desktop.App"
-             RequestedThemeVariant="Dark">
-             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 x:Class="Blender.Desktop.App"
+			 RequestedThemeVariant="Dark">
+	<!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
-    <Application.Resources>
-        <!-- Desktop-specific layout adjustments -->
-        <Thickness x:Key="ObjectViewerPadding">8</Thickness>
-        <x:Double x:Key="ObjectViewerFontSize">13</x:Double>
-        <Thickness x:Key="ObjectViewerItemSpacing">0,0,4,0</Thickness>
-    </Application.Resources>
-    <Application.Styles>
-        <FluentTheme />
-        <StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml"/>
-        <StyleInclude Source="avares://ObjectViewer/Themes/ObjectViewer.axaml"/>
-    </Application.Styles>
+	<Application.Resources>
+		<!-- MainWindow layout resources -->
+		<Color x:Key="MainWindowBackground">#000000</Color>
+		<Color x:Key="MainWindowForeground">#FFFFFF</Color>
+		<Color x:Key="ErrorBorderBackground">#442222</Color>
+		<Thickness x:Key="ErrorBorderPadding">8</Thickness>
+		<Color x:Key="ErrorTextForeground">#FF6666</Color>
+		<x:Double x:Key="RawTextFontSize">13</x:Double>
+		<Color x:Key="RawTextBackground">#1E1E1E</Color>
+		<Color x:Key="RawTextForeground">#D4D4D4</Color>
+		<Thickness x:Key="RawTextPadding">8</Thickness>
+		<Thickness x:Key="RawTextBorderThickness">0</Thickness>
+
+		<!-- ObjectViewer layout -->
+		<Thickness x:Key="ObjectViewerPadding">8</Thickness>
+		<x:Double x:Key="ObjectViewerFontSize">13</x:Double>
+		<Thickness x:Key="ObjectViewerItemSpacing">0,0,4,0</Thickness>
+		<x:Double x:Key="ObjectViewerRawPaneWidth">400</x:Double>
+		<x:Double x:Key="ObjectViewerIndentWidth">16</x:Double>
+
+		<!-- ListBoxItem layout -->
+		<Thickness x:Key="ObjectViewerListBoxItemPadding">2</Thickness>
+		<Thickness x:Key="ObjectViewerListBoxItemMargin">0</Thickness>
+		<x:Double x:Key="ObjectViewerListBoxItemMinHeight">20</x:Double>
+
+		<!-- Expand icon -->
+		<x:Double x:Key="ObjectViewerExpandIconWidth">20</x:Double>
+
+		<!-- Line number indicator -->
+		<x:Double x:Key="ObjectViewerLineNumberFontSize">10</x:Double>
+		<Thickness x:Key="ObjectViewerLineNumberMargin">0,0,6,0</Thickness>
+
+		<!-- Values preview -->
+		<Thickness x:Key="ObjectViewerValuesPreviewMargin">4,0,0,0</Thickness>
+
+		<!-- GridSplitter -->
+		<x:Double x:Key="ObjectViewerSplitterWidth">4</x:Double>
+
+		<!-- Raw pane -->
+		<x:Double x:Key="ObjectViewerRawPaneMinWidth">200</x:Double>
+		<Thickness x:Key="ObjectViewerRawPaneBorderThickness">1,0,0,0</Thickness>
+
+		<!-- Raw pane header -->
+		<Thickness x:Key="ObjectViewerHeaderPadding">8,4</Thickness>
+		<x:Double x:Key="ObjectViewerHeaderFontSize">11</x:Double>
+	</Application.Resources>
+	<Application.Styles>
+		<FluentTheme />
+		<StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml"/>
+		<StyleInclude Source="avares://ObjectViewer/Themes/ObjectViewer.axaml"/>
+	</Application.Styles>
 </Application>

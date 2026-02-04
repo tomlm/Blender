@@ -19,9 +19,14 @@ public class FlattenedNode
     public int Depth { get; }
 
     /// <summary>
+    /// Gets the indent size in pixels per depth level.
+    /// </summary>
+    public double IndentSize { get; }
+
+    /// <summary>
     /// Gets the indentation width in pixels (Depth * IndentSize).
     /// </summary>
-    public double IndentWidth => Depth * 16;
+    public double IndentWidth => Depth * IndentSize;
 
     /// <summary>
     /// Gets whether this node can be expanded (has children).
@@ -52,9 +57,10 @@ public class FlattenedNode
     public bool HasSourceLocation => Node.HasSourceLocation;
     public string? ValuesPreview => Node.ValuesPreview;
 
-    public FlattenedNode(ObjectNode node, int depth)
+    public FlattenedNode(ObjectNode node, int depth, double indentSize = 16)
     {
         Node = node ?? throw new ArgumentNullException(nameof(node));
         Depth = depth;
+        IndentSize = indentSize;
     }
 }

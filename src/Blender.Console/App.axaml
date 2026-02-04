@@ -1,16 +1,57 @@
 <Application xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:console="https://github.com/jinek/consolonia"
-             x:Class="Blender.Console.App"
-             RequestedThemeVariant="Default">
-    <Application.Resources>
-        <!-- Console-specific layout adjustments -->
-        <Thickness x:Key="ObjectViewerPadding">0</Thickness>
-        <x:Double x:Key="ObjectViewerFontSize">1</x:Double>
-        <Thickness x:Key="ObjectViewerItemSpacing">0</Thickness>
-    </Application.Resources>
-    <Application.Styles>
-        <console:ModernTheme />
-        <StyleInclude Source="avares://ObjectViewer/Themes/ObjectViewer.axaml"/>
-    </Application.Styles>
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:console="https://github.com/jinek/consolonia"
+			 x:Class="Blender.Console.App"
+			 RequestedThemeVariant="Default">
+	<Application.Resources>
+		<!-- MainWindow layout resources -->
+		<Color x:Key="MainWindowBackground">#000000</Color>
+		<Color x:Key="MainWindowForeground">#FFFFFF</Color>
+		<Color x:Key="ErrorBorderBackground">#442222</Color>
+		<Thickness x:Key="ErrorBorderPadding">1</Thickness>
+		<Color x:Key="ErrorTextForeground">#FF6666</Color>
+		<x:Double x:Key="RawTextFontSize">1</x:Double>
+		<Color x:Key="RawTextBackground">#1E1E1E</Color>
+		<Color x:Key="RawTextForeground">#D4D4D4</Color>
+		<Thickness x:Key="RawTextPadding">1</Thickness>
+		<Thickness x:Key="RawTextBorderThickness">0</Thickness>
+
+		<!-- ObjectViewer layout -->
+		<Thickness x:Key="ObjectViewerPadding">0</Thickness>
+		<x:Double x:Key="ObjectViewerFontSize">1</x:Double>
+		<Thickness x:Key="ObjectViewerItemSpacing">0</Thickness>
+		<x:Double x:Key="ObjectViewerRawPaneWidth">20</x:Double>
+		<x:Double x:Key="ObjectViewerIndentWidth">2</x:Double>
+
+		<!-- ListBoxItem layout -->
+		<Thickness x:Key="ObjectViewerListBoxItemPadding">0</Thickness>
+		<Thickness x:Key="ObjectViewerListBoxItemMargin">0</Thickness>
+		<x:Double x:Key="ObjectViewerListBoxItemMinHeight">1</x:Double>
+
+		<!-- Expand icon -->
+		<x:Double x:Key="ObjectViewerExpandIconWidth">1</x:Double>
+
+		<!-- Line number indicator -->
+		<x:Double x:Key="ObjectViewerLineNumberFontSize">1</x:Double>
+		<Thickness x:Key="ObjectViewerLineNumberMargin">0</Thickness>
+
+		<!-- Values preview -->
+		<Thickness x:Key="ObjectViewerValuesPreviewMargin">1,0,0,0</Thickness>
+
+		<!-- GridSplitter -->
+		<x:Double x:Key="ObjectViewerSplitterWidth">1</x:Double>
+
+		<!-- Raw pane -->
+		<x:Double x:Key="ObjectViewerRawPaneMinWidth">20</x:Double>
+		<Thickness x:Key="ObjectViewerRawPaneBorderThickness">1,0,0,0</Thickness>
+
+		<!-- Raw pane header -->
+		<Thickness x:Key="ObjectViewerHeaderPadding">1,0</Thickness>
+		<x:Double x:Key="ObjectViewerHeaderFontSize">1</x:Double>
+
+	</Application.Resources>
+	<Application.Styles>
+		<console:ModernTheme />
+		<StyleInclude Source="avares://ObjectViewer/Themes/ObjectViewer.axaml"/>
+	</Application.Styles>
 </Application>

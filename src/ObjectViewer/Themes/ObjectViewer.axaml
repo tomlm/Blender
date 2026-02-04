@@ -1,152 +1,178 @@
 <Styles xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:dv="using:DumpViewer"
-    xmlns:ae="using:AvaloniaEdit">
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:dv="using:DumpViewer"
+		xmlns:ae="using:AvaloniaEdit">
 
-<Design.PreviewWith>
-    <Border Padding="20" Background="#1E1E1E">
-        <dv:ObjectViewer Value="Test String" />
-    </Border>
-</Design.PreviewWith>
+	<Design.PreviewWith>
+		<Border Padding="20" Background="#1E1E1E">
+			<dv:ObjectViewer Value="Test String" />
+		</Border>
+	</Design.PreviewWith>
 
-<!-- Default layout resources (can be overridden in App.axaml) -->
-<Styles.Resources>
-    <Thickness x:Key="ObjectViewerPadding">8</Thickness>
-    <x:Double x:Key="ObjectViewerFontSize">13</x:Double>
-    <Thickness x:Key="ObjectViewerItemSpacing">0,0,4,0</Thickness>
-    <x:Double x:Key="ObjectViewerRawPaneWidth">400</x:Double>
-    <x:Double x:Key="ObjectViewerIndentWidth">16</x:Double>
-</Styles.Resources>
+	<!-- Default layout resources (can be overridden in App.axaml) -->
+	<Styles.Resources>
+		<!-- ObjectViewer layout -->
+		<Thickness x:Key="ObjectViewerPadding">8</Thickness>
+		<x:Double x:Key="ObjectViewerFontSize">13</x:Double>
+		<Thickness x:Key="ObjectViewerItemSpacing">0,0,4,0</Thickness>
+		<x:Double x:Key="ObjectViewerRawPaneWidth">400</x:Double>
+		<x:Double x:Key="ObjectViewerIndentWidth">16</x:Double>
 
-<!-- ObjectViewer template using virtualized ListBox -->
-<Style Selector="dv|ObjectViewer">
-    <Setter Property="Template">
-        <ControlTemplate>
-            <Border Padding="{DynamicResource ObjectViewerPadding}" Background="#1E1E1E">
-                    <!-- Main content with optional raw text pane -->
-                    <Grid ColumnDefinitions="*,Auto,*">
-                            <!-- Virtualized ListBox (left side) - handles 400k+ items efficiently -->
-                            <ListBox Name="PART_ListBox"
-                                     Grid.Column="0"
-                                     ItemsSource="{Binding FlattenedItems, RelativeSource={RelativeSource TemplatedParent}}"
-                                     Background="Transparent"
-                                     SelectionMode="Single">
-                            <ListBox.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <VirtualizingStackPanel />
-                                </ItemsPanelTemplate>
-                            </ListBox.ItemsPanel>
-                            <ListBox.Styles>
-                                <Style Selector="ListBoxItem">
-                                    <Setter Property="Padding" Value="2"/>
-                                    <Setter Property="Margin" Value="0"/>
-                                    <Setter Property="MinHeight" Value="20"/>
-                                    <Setter Property="Foreground" Value="#D4D4D4"/>
-                                    <Setter Property="FontFamily" Value="Consolas, Monaco, 'Courier New', monospace"/>
-                                    <Setter Property="FontSize" Value="{DynamicResource ObjectViewerFontSize}"/>
-                                </Style>
-                                <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
-                                    <Setter Property="Background" Value="#094771"/>
-                                </Style>
-                            </ListBox.Styles>
-                            <ListBox.ItemTemplate>
-                                <DataTemplate DataType="dv:FlattenedNode">
-                                    <StackPanel Orientation="Horizontal">
-                                        <!-- Indentation spacer based on depth -->
-                                        <Border Width="{Binding IndentWidth}" />
-                                            
-                                        <!-- Expand/Collapse indicator -->
-                                        <TextBlock Text="{Binding ExpandIcon}"
-                                                   Foreground="#808080"
-                                                   FontFamily="Consolas"
-                                                   Width="20"
-                                                   VerticalAlignment="Center"/>
-                                            
-                                        <!-- Line number indicator -->
-                                        <TextBlock Text="{Binding StartLine, StringFormat='L{0}'}"
-                                                   IsVisible="{Binding HasSourceLocation}"
-                                                   Foreground="#6A9955"
-                                                   FontSize="10"
-                                                   VerticalAlignment="Center"
-                                                   Margin="0,0,6,0"
-                                                   Opacity="0.7"/>
-                                            
-                                        <!-- Property name -->
-                                        <TextBlock Text="{Binding Name}"
-                                                   IsVisible="{Binding Name, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                                                   Foreground="#9CDCFE"
-                                                   Margin="{DynamicResource ObjectViewerItemSpacing}"/>
-                                            
-                                        <TextBlock Text=": "
-                                                   IsVisible="{Binding Name, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                                                   Foreground="#D4D4D4"/>
-                                            
-                                        <!-- Type name for complex types -->
-                                        <TextBlock Text="{Binding TypeName}"
-                                                   IsVisible="{Binding HasChildren}"
-                                                   Foreground="#4EC9B0"
-                                                   Margin="{DynamicResource ObjectViewerItemSpacing}"/>
+		<!-- ListBoxItem layout -->
+		<Thickness x:Key="ObjectViewerListBoxItemPadding">2</Thickness>
+		<Thickness x:Key="ObjectViewerListBoxItemMargin">0</Thickness>
+		<x:Double x:Key="ObjectViewerListBoxItemMinHeight">20</x:Double>
 
-                                        <!-- Values preview for object nodes -->
-                                        <TextBlock Text="{Binding ValuesPreview}"
-                                                   IsVisible="{Binding ValuesPreview, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                                                   Foreground="#808080"
-                                                   FontStyle="Italic"
-                                                   TextWrapping="NoWrap"
-                                                   TextTrimming="CharacterEllipsis"
-                                                   Margin="4,0,0,0"/>
-                                            
-                                        <!-- Display value with color based on kind -->
-                                        <TextBlock Text="{Binding DisplayValue}"
-                                                   Foreground="{Binding Kind, Converter={x:Static dv:NodeKindToBrushConverter.Instance}}"
-                                                   FontStyle="{Binding Kind, Converter={x:Static dv:NodeKindToFontStyleConverter.Instance}}"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                            
-                        <!-- Splitter -->
-                        <GridSplitter Grid.Column="1" 
-                                      Width="4" 
-                                      Background="#3F3F46"
-                                      IsVisible="{Binding SourceText, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
-                            
-                        <!-- Raw Text Pane (right side) with AvaloniaEdit -->
-                        <Border Grid.Column="2" 
-                                MinWidth="200"
-                                Background="#1E1E1E"
-                                BorderBrush="#3F3F46"
-                                BorderThickness="1,0,0,0"
-                                IsVisible="{Binding SourceText, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
-                            <Grid RowDefinitions="Auto,*">
-                                <!-- Header -->
-                                <Border Grid.Row="0"
-                                        Background="#2D2D2D" 
-                                        Padding="8,4">
-                                    <TextBlock Text="Source" 
-                                               Foreground="#808080" 
-                                               FontSize="11"/>
-                                </Border>
-                                    
-                                <!-- AvaloniaEdit TextEditor - using Grid instead of DockPanel for better sizing -->
-                                <ae:TextEditor Name="PART_TextEditor"
-                                               Grid.Row="1"
-                                               IsReadOnly="True"
-                                               ShowLineNumbers="True"
-                                               WordWrap="False"
-                                               FontFamily="Consolas, Monaco, 'Courier New', monospace"
-                                               FontSize="{DynamicResource ObjectViewerFontSize}"
-                                               Background="#1E1E1E"
-                                               Foreground="#D4D4D4"
-                                               LineNumbersForeground="#858585"
-                                               HorizontalScrollBarVisibility="Auto"
-                                               VerticalScrollBarVisibility="Auto"/>
-                            </Grid>
-                        </Border>
-                    </Grid>
-            </Border>
-        </ControlTemplate>
-    </Setter>
-</Style>
-    
+		<!-- Expand icon -->
+		<x:Double x:Key="ObjectViewerExpandIconWidth">20</x:Double>
+
+		<!-- Line number indicator -->
+		<x:Double x:Key="ObjectViewerLineNumberFontSize">10</x:Double>
+		<Thickness x:Key="ObjectViewerLineNumberMargin">0,0,6,0</Thickness>
+
+		<!-- Values preview -->
+		<Thickness x:Key="ObjectViewerValuesPreviewMargin">4,0,0,0</Thickness>
+
+		<!-- GridSplitter -->
+		<x:Double x:Key="ObjectViewerSplitterWidth">4</x:Double>
+
+		<!-- Raw pane -->
+		<x:Double x:Key="ObjectViewerRawPaneMinWidth">200</x:Double>
+		<Thickness x:Key="ObjectViewerRawPaneBorderThickness">1,0,0,0</Thickness>
+
+		<!-- Raw pane header -->
+		<Thickness x:Key="ObjectViewerHeaderPadding">8,4</Thickness>
+		<x:Double x:Key="ObjectViewerHeaderFontSize">11</x:Double>
+	</Styles.Resources>
+
+	<!-- ObjectViewer template using virtualized ListBox -->
+	<Style Selector="dv|ObjectViewer">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Padding="{DynamicResource ObjectViewerPadding}" Background="#1E1E1E">
+					<!-- Main content with optional raw text pane -->
+					<Grid ColumnDefinitions="*,Auto,*">
+						<!-- Virtualized ListBox (left side) - handles 400k+ items efficiently -->
+						<ListBox Name="PART_ListBox"
+								 Grid.Column="0"
+								 ItemsSource="{Binding FlattenedItems, RelativeSource={RelativeSource TemplatedParent}}"
+								 Background="Transparent"
+								 SelectionMode="Single">
+							<ListBox.ItemsPanel>
+								<ItemsPanelTemplate>
+									<VirtualizingStackPanel />
+								</ItemsPanelTemplate>
+							</ListBox.ItemsPanel>
+							<ListBox.Styles>
+								<Style Selector="ListBoxItem">
+									<Setter Property="Padding" Value="{DynamicResource ObjectViewerListBoxItemPadding}"/>
+									<Setter Property="Margin" Value="{DynamicResource ObjectViewerListBoxItemMargin}"/>
+									<Setter Property="MinHeight" Value="{DynamicResource ObjectViewerListBoxItemMinHeight}"/>
+									<Setter Property="Foreground" Value="#D4D4D4"/>
+									<Setter Property="FontFamily" Value="Consolas, Monaco, 'Courier New', monospace"/>
+									<Setter Property="FontSize" Value="{DynamicResource ObjectViewerFontSize}"/>
+								</Style>
+								<Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+									<Setter Property="Background" Value="#094771"/>
+								</Style>
+							</ListBox.Styles>
+							<ListBox.ItemTemplate>
+								<DataTemplate DataType="dv:FlattenedNode">
+									<StackPanel Orientation="Horizontal">
+										<!-- Indentation spacer based on depth -->
+										<Border Width="{Binding IndentWidth}" />
+
+										<!-- Expand/Collapse indicator -->
+										<TextBlock Text="{Binding ExpandIcon}"
+												   Foreground="#808080"
+												   FontFamily="Consolas"
+												   Width="{DynamicResource ObjectViewerExpandIconWidth}"
+												   VerticalAlignment="Center"/>
+
+										<!-- Line number indicator -->
+										<TextBlock Text="{Binding StartLine, StringFormat='L{0}'}"
+												   IsVisible="{Binding HasSourceLocation}"
+												   Foreground="#6A9955"
+												   FontSize="{DynamicResource ObjectViewerLineNumberFontSize}"
+												   VerticalAlignment="Center"
+												   Margin="{DynamicResource ObjectViewerLineNumberMargin}"
+												   Opacity="0.7"/>
+
+										<!-- Property name -->
+										<TextBlock Text="{Binding Name}"
+												   IsVisible="{Binding Name, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+												   Foreground="#9CDCFE"
+												   Margin="{DynamicResource ObjectViewerItemSpacing}"/>
+
+										<TextBlock Text=": "
+												   IsVisible="{Binding Name, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+												   Foreground="#D4D4D4"/>
+
+										<!-- Type name for complex types -->
+										<TextBlock Text="{Binding TypeName}"
+												   IsVisible="{Binding HasChildren}"
+												   Foreground="#4EC9B0"
+												   Margin="{DynamicResource ObjectViewerItemSpacing}"/>
+
+										<!-- Values preview for object nodes -->
+										<TextBlock Text="{Binding ValuesPreview}"
+												   IsVisible="{Binding ValuesPreview, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+												   Foreground="#808080"
+												   FontStyle="Italic"
+												   TextWrapping="NoWrap"
+												   TextTrimming="CharacterEllipsis"
+												   Margin="{DynamicResource ObjectViewerValuesPreviewMargin}"/>
+
+										<!-- Display value with color based on kind -->
+										<TextBlock Text="{Binding DisplayValue}"
+												   Foreground="{Binding Kind, Converter={x:Static dv:NodeKindToBrushConverter.Instance}}"
+												   FontStyle="{Binding Kind, Converter={x:Static dv:NodeKindToFontStyleConverter.Instance}}"/>
+									</StackPanel>
+								</DataTemplate>
+							</ListBox.ItemTemplate>
+						</ListBox>
+
+						<!-- Splitter -->
+						<GridSplitter Grid.Column="1"
+									  Width="{DynamicResource ObjectViewerSplitterWidth}"
+									  Background="#3F3F46"
+									  IsVisible="{Binding SourceText, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+
+						<!-- Raw Text Pane (right side) with AvaloniaEdit -->
+						<Border Grid.Column="2"
+								MinWidth="{DynamicResource ObjectViewerRawPaneMinWidth}"
+								Background="#1E1E1E"
+								BorderBrush="#3F3F46"
+								BorderThickness="{DynamicResource ObjectViewerRawPaneBorderThickness}"
+								IsVisible="{Binding SourceText, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+							<Grid RowDefinitions="Auto,*">
+								<!-- Header -->
+								<Border Grid.Row="0"
+										Background="#2D2D2D"
+										Padding="{DynamicResource ObjectViewerHeaderPadding}">
+									<TextBlock Text="Source"
+											   Foreground="#808080"
+											   FontSize="{DynamicResource ObjectViewerHeaderFontSize}"/>
+								</Border>
+
+								<!-- AvaloniaEdit TextEditor - using Grid instead of DockPanel for better sizing -->
+								<ae:TextEditor Name="PART_TextEditor"
+											   Grid.Row="1"
+											   IsReadOnly="True"
+											   ShowLineNumbers="True"
+											   WordWrap="False"
+											   FontFamily="Consolas, Monaco, 'Courier New', monospace"
+											   FontSize="{DynamicResource ObjectViewerFontSize}"
+											   Background="#1E1E1E"
+											   Foreground="#D4D4D4"
+											   LineNumbersForeground="#858585"
+											   HorizontalScrollBarVisibility="Auto"
+											   VerticalScrollBarVisibility="Auto"/>
+							</Grid>
+						</Border>
+					</Grid>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+	</Style>
 </Styles>

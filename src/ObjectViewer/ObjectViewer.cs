@@ -36,7 +36,7 @@ public class ObjectViewer : TemplatedControl
     /// Defines the <see cref="MaxDepth"/> property.
     /// </summary>
     public static readonly StyledProperty<int> MaxDepthProperty =
-        AvaloniaProperty.Register<ObjectViewer, int>(nameof(MaxDepth), 10);
+        AvaloniaProperty.Register<ObjectViewer, int>(nameof(MaxDepth), 20);
 
     /// <summary>
     /// Defines the <see cref="SourceText"/> property.
@@ -148,6 +148,12 @@ public class ObjectViewer : TemplatedControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+
+        // Read indent width from resources
+        if (this.TryFindResource("ObjectViewerIndentWidth", out var indentResource) && indentResource is double indentWidth)
+        {
+            _flattenedItems.IndentSize = indentWidth;
+        }
 
         // Unsubscribe from old controls
         if (_listBox != null)
@@ -292,10 +298,6 @@ public class ObjectViewer : TemplatedControl
         _textEditor.Background = Brushes.Transparent;
         _textEditor.Foreground = new SolidColorBrush(Color.Parse("#D4D4D4"));
     }
-
-
-
-
 
 
     private void UpdateTextEditorContent()

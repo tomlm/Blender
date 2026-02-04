@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Xml;
 using System.Xml.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Humanizer;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using YamlDotNet.RepresentationModel;
@@ -256,9 +257,6 @@ public partial class ObjectNode : ObservableObject
             return (NodeKind.Null, "null", "", false);
         }
 
-
-
-
         var type = value.GetType();
         var typeName = GetFriendlyTypeName(type);
 
@@ -501,7 +499,7 @@ public partial class ObjectNode : ObservableObject
             foreach (var prop in jObj.Properties().OrderBy(p => p.Name))
             {
                 // Infer item type name if the value is an array
-                string? itemTypeName = prop.Value is JArray ? Singularize(prop.Name) : null;
+                string? itemTypeName = prop.Value is JArray ? prop.Name.Singularize() : null;
                 children.Add(new ObjectNode(prop.Value, prop.Name, _maxDepth, _currentDepth + 1, newVisited, itemTypeName));
             }
             return children;
@@ -525,7 +523,7 @@ public partial class ObjectNode : ObservableObject
             foreach (var entry in yamlMap.Children.OrderBy(e => e.Key.ToString()))
             {
                 var key = (entry.Key as YamlScalarNode)?.Value ?? entry.Key.ToString();
-                string? itemTypeName = entry.Value is YamlSequenceNode ? Singularize(key) : null;
+                string? itemTypeName = entry.Value is YamlSequenceNode ? key.Singularize() : null;
                 children.Add(new ObjectNode(entry.Value, key, _maxDepth, _currentDepth + 1, newVisited, itemTypeName));
             }
             return children;
@@ -587,7 +585,7 @@ public partial class ObjectNode : ObservableObject
             if (distinctNames.Count == 1 && childElements.Count > 0)
             {
                 // All children have the same name - treat as array with indexes
-                var itemTypeName = Singularize(distinctNames[0]);
+                var itemTypeName = distinctNames[0].Singularize();
                 int index = 0;
                 foreach (var childElement in childElements)
                 {
@@ -778,48 +776,6 @@ public partial class ObjectNode : ObservableObject
         return type.Name;
     }
 
-    /// <summary>
-    /// Attempts to singularize a plural word (e.g., "users" ? "User", "categories" ? "Category").
-    /// </summary>
-    private static string Singularize(string plural)
-    {
-        if (string.IsNullOrEmpty(plural))
-            return "Item";
-
-        // Convert to PascalCase for display
-        var result = char.ToUpperInvariant(plural[0]) + plural[1..];
-
-        // Handle common plural patterns
-        if (result.EndsWith("ies", StringComparison.OrdinalIgnoreCase) && result.Length > 3)
-        {
-            // categories ? Category, companies ? Company
-            return result[..^3] + "y";
-        }
-        if (result.EndsWith("ses", StringComparison.OrdinalIgnoreCase) || 
-            result.EndsWith("xes", StringComparison.OrdinalIgnoreCase) ||
-            result.EndsWith("zes", StringComparison.OrdinalIgnoreCase) ||
-            result.EndsWith("ches", StringComparison.OrdinalIgnoreCase) ||
-            result.EndsWith("shes", StringComparison.OrdinalIgnoreCase))
-        {
-            // classes ? Class, boxes ? Box, matches ? Match
-            return result[..^2];
-        }
-        if (result.EndsWith("ves", StringComparison.OrdinalIgnoreCase) && result.Length > 3)
-        {
-            // leaves ? Leaf, wives ? Wife (approximation)
-            return result[..^3] + "f";
-        }
-        if (result.EndsWith("s", StringComparison.OrdinalIgnoreCase) && 
-            !result.EndsWith("ss", StringComparison.OrdinalIgnoreCase) &&
-            !result.EndsWith("us", StringComparison.OrdinalIgnoreCase) &&
-            !result.EndsWith("is", StringComparison.OrdinalIgnoreCase))
-        {
-            // users ? User, items ? Item
-            return result[..^1];
-        }
-
-        return result;
-    }
 }
 
 /// <summary>
