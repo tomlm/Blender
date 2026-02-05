@@ -1,7 +1,8 @@
 {
   "profiles": {
     "Blender.Desktop": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "-f s:\\big.json\r\n"
     }
   }
 }

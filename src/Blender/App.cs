@@ -3,6 +3,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Blender.ViewModels;
 using Blender.Views;
+using System.Threading.Tasks;
 
 namespace Blender
 {
@@ -13,36 +14,43 @@ namespace Blender
         /// </summary>
         public AppViewModel AppViewModel { get; } = new();
 
-        public override async void OnFrameworkInitializationCompleted()
+        public override void OnFrameworkInitializationCompleted()
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
             {
-                // Parse command line arguments
-                var args = desktopLifetime.Args ?? [];
-                await AppViewModel.ParseArgumentsAsync(args);
-
-                // Create the main window with its own data context
+                // Create the main window immediately so it can be shown
                 var mainViewModel = new MainWindowViewModel();
-
-                // Load data based on CLI arguments
-                if (!string.IsNullOrEmpty(AppViewModel.FilePath))
-                {
-                    await mainViewModel.LoadFromFileAsync(AppViewModel.FilePath, AppViewModel.Format);
-                }
-                else
-                {
-                    await mainViewModel.LoadFromStdinAsync(AppViewModel.Format);
-                }
-
                 var mainWindow = new MainWindow
                 {
                     DataContext = mainViewModel
                 };
                 mainViewModel.Window = mainWindow;
                 desktopLifetime.MainWindow = mainWindow;
+
+                // Parse arguments and load data asynchronously AFTER window is assigned
+                _ = InitializeAsync(desktopLifetime.Args ?? [], mainViewModel);
             }
 
             base.OnFrameworkInitializationCompleted();
         }
+
+        private async Task InitializeAsync(string[] args, MainWindowViewModel mainViewModel)
+        {
+
+            // Parse command line arguments
+            await AppViewModel.ParseArgumentsAsync(args);
+
+            // Load data based on CLI arguments
+            if (!string.IsNullOrEmpty(AppViewModel.FilePath))
+            {
+                await mainViewModel.LoadFromFileAsync(AppViewModel.FilePath, AppViewModel.Format);
+            }
+            else
+            {
+                await mainViewModel.LoadFromStdinAsync(AppViewModel.Format);
+            }
+        }
     }
 }
+
+        

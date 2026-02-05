@@ -1,53 +1,70 @@
 <Window xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:vm="using:Blender.ViewModels"
-    xmlns:dv="using:DumpViewer"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-    x:Class="Blender.Views.MainWindow"
-    x:DataType="vm:MainWindowViewModel"
-    Foreground="White"
-    Background="Black"
-    Icon="/Assets/avalonia-logo.ico"
-    Title="Blender">
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:vm="using:Blender.ViewModels"
+		xmlns:dv="using:DumpViewer"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+		x:Class="Blender.Views.MainWindow"
+		x:DataType="vm:MainWindowViewModel"
+		Foreground="White"
+		Background="Black"
+		Icon="/Assets/avalonia-logo.ico"
+		Title="Blender">
 
-<Window.KeyBindings>
-    <KeyBinding Gesture="Ctrl+O" Command="{Binding OpenFileCommand}"/>
-    <KeyBinding Gesture="Alt+F4" Command="{Binding CloseWindowCommand}"/>
-    <KeyBinding Gesture="Ctrl+W" Command="{Binding CloseWindowCommand}"/>
-    <KeyBinding Gesture="Ctrl+R" Command="{Binding ShowRawViewCommand}"/>
-    <KeyBinding Gesture="Ctrl+D" Command="{Binding ShowObjectsViewCommand}"/>
-</Window.KeyBindings>
+	<Window.KeyBindings>
+		<KeyBinding Gesture="Ctrl+O" Command="{Binding OpenFileCommand}"/>
+		<KeyBinding Gesture="Alt+F4" Command="{Binding CloseWindowCommand}"/>
+		<KeyBinding Gesture="Ctrl+W" Command="{Binding CloseWindowCommand}"/>
+		<KeyBinding Gesture="Ctrl+R" Command="{Binding ShowRawViewCommand}"/>
+		<KeyBinding Gesture="Ctrl+D" Command="{Binding ShowObjectsViewCommand}"/>
+	</Window.KeyBindings>
 
-<Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
+	<Design.DataContext>
+		<!-- This only sets the DataContext for the previewer in an IDE,
+		to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+		<vm:MainWindowViewModel/>
+	</Design.DataContext>
 
-    <DockPanel>
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="_File">
-                <MenuItem Header="_Open..." Command="{Binding OpenFileCommand}" InputGesture="Ctrl+O"/>
-                <Separator/>
-                <MenuItem Header="E_xit" Command="{Binding CloseWindowCommand}" InputGesture="Ctrl+W"/>
-            </MenuItem>
-        </Menu>
-        
-        <!-- Error display -->
-        <Border DockPanel.Dock="Top" 
-                Padding="{DynamicResource ErrorBorderPadding}"
-                IsVisible="{Binding HasError}">
-            <TextBlock Text="{Binding ErrorMessage}" Foreground="#FF6666"/>
-        </Border>
-        
-        
-        <!-- Object viewer -->
-        <dv:ObjectViewer Value="{Binding Data}" 
-                         IsVisible="{Binding HasData}"
-                         SourceText="{Binding InputData}"
-                         SyntaxHighlighting="{Binding FormatName}"/>
-    </DockPanel>
+	<DockPanel>
+		<Menu DockPanel.Dock="Top">
+			<MenuItem Header="_File">
+				<MenuItem Header="_Open..." Command="{Binding OpenFileCommand}" InputGesture="Ctrl+O"/>
+				<Separator/>
+				<MenuItem Header="E_xit" Command="{Binding CloseWindowCommand}" InputGesture="Ctrl+W"/>
+			</MenuItem>
+		</Menu>
+
+		<!-- Error display -->
+		<Border DockPanel.Dock="Top"
+				Padding="{DynamicResource ErrorBorderPadding}"
+				IsVisible="{Binding HasError}">
+			<TextBlock Text="{Binding ErrorMessage}" Foreground="#FF6666"/>
+		</Border>
+
+		<!-- Loading progress indicator -->
+		<Grid>
+			<StackPanel IsVisible="{Binding IsLoading}"
+						HorizontalAlignment="Center"
+						VerticalAlignment="Center"
+						Spacing="16"
+						MinWidth="300">
+				<TextBlock Text="{Binding LoadingStatus}"
+						   HorizontalAlignment="Center"
+						   FontSize="16"/>
+				<ProgressBar Minimum="0"
+							 Maximum="{Binding LoadingMaximum}"
+							 Value="{Binding LoadingProgress}"
+							 Height="20"
+							 ShowProgressText="True"/>
+			</StackPanel>
+
+			<!-- Object viewer (hidden while loading) -->
+			<dv:ObjectViewer Value="{Binding Data}"
+							 IsVisible="{Binding !IsLoading}"
+							 SourceText="{Binding InputData}"
+							 SyntaxHighlighting="{Binding FormatName}"/>
+		</Grid>
+	</DockPanel>
 
 </Window>
