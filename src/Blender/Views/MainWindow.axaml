@@ -45,15 +45,9 @@
         
         <!-- Object viewer -->
         <dv:ObjectViewer Value="{Binding Data}" 
+                         IsVisible="{Binding HasData}"
                          SourceText="{Binding InputData}"
-                         SyntaxHighlighting="{Binding FormatName}">
-            <dv:ObjectViewer.IsVisible>
-                <MultiBinding Converter="{x:Static BoolConverters.And}">
-                    <Binding Path="IsObjectsView"/>
-                    <Binding Path="HasData"/>
-                </MultiBinding>
-            </dv:ObjectViewer.IsVisible>
-        </dv:ObjectViewer>
+                         SyntaxHighlighting="{Binding FormatName}"/>
     </DockPanel>
 
 </Window>
