@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <OutputType>Exe</OutputType>
-        <TargetFramework>net10.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-    </PropertyGroup>
-<PropertyGroup>
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <PropertyGroup>
     <Version>1.0.0</Version>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <Description></Description>
@@ -17,33 +17,33 @@
     <PackageIconUrl>https://raw.githubusercontent.com/tomlm/PrettyStick/master/icon.png</PackageIconUrl>
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/tomlm/PrettyStick</RepositoryUrl>
     <Copyright>Tom Laird-McConnell All Rights Reserved</Copyright>
     <RootNamespace>PrettyStick.Console</RootNamespace>
     <ContentTargetFolders>content</ContentTargetFolders>
     <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>  
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackAsTool>true</PackAsTool>
+    <PackageId>PrettyStick.TUI</PackageId>
     <ToolCommandName>PrettyStick</ToolCommandName>
     <PackageOutputPath>./nupkg</PackageOutputPath>
+    <RuntimeIdentifiers Condition="'$(Configuration)' == 'Release'">win-x64;linux-x64;osx-x64;win-arm64;linux-arm64;osx-arm64;any</RuntimeIdentifiers>
+    <PublishReadyToRun Condition="'$(Configuration)' == 'Release'">true</PublishReadyToRun>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <None Include="../../README.md" Pack="true" PackagePath="" />
     <None Include="../../icon.png" Pack="true" PackagePath="" />
   </ItemGroup>
 
-    
-    <ItemGroup>
-        <PackageReference Include="Consolonia" Version="11.3.*-beta.*" />
-        <PackageReference Include="Consolonia.AvaloniaEdit" Version="11.3.7-beta.2027" />
-        <PackageReference Include="Consolonia.Themes" Version="11.3.9-beta.2218" />
-    </ItemGroup>
-    
-    <ItemGroup>
-      <ProjectReference Include="..\PrettyStick.Shared\PrettyStick.Shared.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Consolonia" Version="11.3.*-beta.*" />
+    <PackageReference Include="Consolonia.AvaloniaEdit" Version="11.3.7-beta.2027" />
+    <PackageReference Include="Consolonia.Themes" Version="11.3.9-beta.2218" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PrettyStick.Shared\PrettyStick.Shared.csproj" />
+  </ItemGroup>
 
 </Project>

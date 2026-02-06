@@ -8,7 +8,7 @@
 		x:Class="PrettyStick.Views.MainWindow"
 		x:DataType="vm:MainWindowViewModel"
 		Icon="/Assets/avalonia-logo.ico"
-		Title="Blender">
+		Title="Pretty Stick">
 
 	<Window.KeyBindings>
 		<KeyBinding Gesture="Ctrl+O" Command="{Binding OpenFileCommand}"/>

@@ -306,6 +306,8 @@ public class ObjectViewer : TemplatedControl
         ApplyTheme(this, _textmate);
     }
 
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+
     private void ApplyTheme(object? sender, TextMate.Installation e)
     {
         ApplyBrushAction(e, "editor.background", brush => _textEditor.Background = brush);

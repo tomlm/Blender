@@ -1,8 +1,4 @@
-using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using PrettyStick.ViewModels;
-using PrettyStick.Views;
 
 namespace PrettyStick.Console;
 

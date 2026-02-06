@@ -1,5 +1,3 @@
-dotnet tool uninstall -g PrettyStick.Console
-dotnet tool uninstall -g PrettyStick
-dotnet build -c Release
+dotnet tool uninstall -g PrettyStick.TUI
 dotnet pack -c Release 
-dotnet tool install -g PrettyStick --source nupkg
+dotnet tool install -g PrettyStick.TUI --source nupkg
