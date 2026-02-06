@@ -43,7 +43,7 @@
     </ItemGroup>
     
     <ItemGroup>
-      <ProjectReference Include="..\Blender\PrettyStick.Core.csproj" />
+      <ProjectReference Include="..\PrettyStick.Core\PrettyStick.Core.csproj" />
     </ItemGroup>
 
 </Project>

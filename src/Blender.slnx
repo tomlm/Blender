@@ -1,9 +1,0 @@
-<Solution>
-  <Folder Name="/Solution Items/">
-    <File Path="../README.md" />
-  </Folder>
-  <Project Path="Blender.Console/PrettyStick.csproj" />
-  <Project Path="Blender.Desktop/PrettyStick.Desktop.csproj" />
-  <Project Path="Blender/PrettyStick.Core.csproj" />
-  <Project Path="ObjectViewer/ObjectViewer.csproj" />
-</Solution>
