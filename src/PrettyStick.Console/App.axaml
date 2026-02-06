@@ -46,7 +46,7 @@
 
 	</Application.Resources>
 	<Application.Styles>
-		<console:ModernTheme />
+		<console:TurboVisionCompatibleTheme />
 		<StyleInclude Source="avares://Consolonia.AvaloniaEdit/Theme.axaml" />
 		<StyleInclude Source="avares://ObjectViewer/Themes/ObjectViewer.axaml"/>
 	</Application.Styles>

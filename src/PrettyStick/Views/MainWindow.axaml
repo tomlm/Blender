@@ -7,8 +7,6 @@
 		mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 		x:Class="PrettyStick.Views.MainWindow"
 		x:DataType="vm:MainWindowViewModel"
-		Foreground="White"
-		Background="Black"
 		Icon="/Assets/avalonia-logo.ico"
 		Title="Blender">
 
