@@ -24,6 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PrettyStick.Core\PrettyStick.Core.csproj" />
+    <ProjectReference Include="..\PrettyStick\PrettyStick.csproj" />
   </ItemGroup>
 </Project>

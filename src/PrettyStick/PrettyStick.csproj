@@ -1,49 +1,38 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <OutputType>Exe</OutputType>
-        <TargetFramework>net10.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-    </PropertyGroup>
-<PropertyGroup>
-    <Version>1.0.0</Version>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <Description></Description>
-    <Company>Iciclecreek</Company>
-    <Authors>Tom Laird-McConnell</Authors>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/tomlm/Blender.Console</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/tomlm/Blender.Console/master/icon.png</PackageIconUrl>
-    <PackageIcon>icon.png</PackageIcon>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <RepositoryUrl>https://github.com/tomlm/Blender.Console</RepositoryUrl>
-    <Copyright>Tom Laird-McConnell All Rights Reserved</Copyright>
-    <RootNamespace>Blender.Console</RootNamespace>
-    <ContentTargetFolders>content</ContentTargetFolders>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>  
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackAsTool>true</PackAsTool>
-    <ToolCommandName>Blender.Console</ToolCommandName>
-    <PackageOutputPath>./nupkg</PackageOutputPath>
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <IsPackable>false</IsPackable>
+    <AssemblyName></AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="../../README.md" Pack="true" PackagePath="" />
-    <None Include="../../icon.png" Pack="true" PackagePath="" />
+    <Folder Include="Models\" />
+    <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
 
-    
-    <ItemGroup>
-        <PackageReference Include="Consolonia" Version="11.3.*-beta.*" />
-        <PackageReference Include="Consolonia.AvaloniaEdit" Version="11.3.7-beta.2027" />
-        <PackageReference Include="Consolonia.Themes" Version="11.3.9-beta.2218" />
-    </ItemGroup>
-    
-    <ItemGroup>
-      <ProjectReference Include="..\PrettyStick.Core\PrettyStick.Core.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.3.6" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.3.6" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.6" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.6" />
+    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+    <PackageReference Include="Avalonia.Diagnostics" Version="11.3.6">
+      <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
+      <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+    <PackageReference Include="CsvHelper" Version="33.1.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="ObjectSearch.Net" Version="1.2.0" />
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+    <PackageReference Include="YamlDotNet" Version="16.3.0" />
+  </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ObjectViewer\ObjectViewer.csproj" />
+  </ItemGroup>
 </Project>
