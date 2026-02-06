@@ -6,7 +6,6 @@
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <IsPackable>false</IsPackable>
-    <AssemblyName></AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
