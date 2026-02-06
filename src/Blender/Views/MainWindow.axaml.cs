@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace Blender.Views;
+namespace PrettyStick.Views;
 
 public partial class MainWindow : Window
 {

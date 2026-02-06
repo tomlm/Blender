@@ -1,11 +1,11 @@
 ﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using Blender.ViewModels;
-using Blender.Views;
+using PrettyStick.ViewModels;
+using PrettyStick.Views;
 using System.Threading.Tasks;
 
-namespace Blender
+namespace PrettyStick
 {
     public class App : Application
     {

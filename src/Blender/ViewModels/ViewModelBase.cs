@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Blender.ViewModels;
+namespace PrettyStick.ViewModels;
 
 public class ViewModelBase : ObservableObject
 {

@@ -1,12 +1,12 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using Blender.ViewModels;
-using Blender.Views;
+using PrettyStick.ViewModels;
+using PrettyStick.Views;
 
-namespace Blender.Desktop;
+namespace PrettyStick.Desktop;
 
-public partial class App : Blender.App
+public partial class App : PrettyStick.App
 {
     public override void Initialize()
     {

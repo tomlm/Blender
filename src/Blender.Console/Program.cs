@@ -1,10 +1,10 @@
 using Avalonia;
 using System.IO;
-using Blender.ViewModels;
+using PrettyStick.ViewModels;
 using Consolonia;
 using System.CommandLine.IO;
 
-namespace Blender.Console
+namespace PrettyStick.Console
 {
     public static class Program
     {

@@ -1,9 +1,9 @@
 using System;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using Blender.ViewModels;
+using PrettyStick.ViewModels;
 
-namespace Blender;
+namespace PrettyStick;
 
 public class ViewLocator : IDataTemplate
 {

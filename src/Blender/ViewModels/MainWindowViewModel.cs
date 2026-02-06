@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using YamlDotNet.RepresentationModel;
 
-namespace Blender.ViewModels;
+namespace PrettyStick.ViewModels;
 
 /// <summary>
 /// The view mode for displaying data.
@@ -173,7 +173,7 @@ public partial class MainWindowViewModel : ViewModelBase
         var helpText = AppViewModel.GetHelpText();
         var dialog = new Avalonia.Controls.Window
         {
-            Title = "About Blender",
+            Title = "About PrettyStick",
             Width = 500,
             Height = 400,
             WindowStartupLocation = Avalonia.Controls.WindowStartupLocation.CenterOwner,

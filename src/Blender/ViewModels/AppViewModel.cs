@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Blender.ViewModels;
+namespace PrettyStick.ViewModels;
 
 /// <summary>
 /// Supported data formats for input.
@@ -90,7 +90,7 @@ public partial class AppViewModel : ViewModelBase
             aliases: ["-c", "--csv"],
             description: "Force CSV format");
 
-        var rootCommand = new RootCommand("Blender - Visualize structured text data")
+        var rootCommand = new RootCommand("PrettyStick - Visualize structured text data")
         {
             fileOption,
             xmlOption,
@@ -131,7 +131,7 @@ public partial class AppViewModel : ViewModelBase
     public static string GetHelpText()
     {
         return """
-            Blender - Visualize structured text data
+            PrettyStick - Visualize structured text data
 
             Usage: blender [options]
 

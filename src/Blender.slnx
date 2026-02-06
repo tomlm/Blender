@@ -2,8 +2,8 @@
   <Folder Name="/Solution Items/">
     <File Path="../README.md" />
   </Folder>
-  <Project Path="Blender.Console/Blender.Console.csproj" />
-  <Project Path="Blender.Desktop/Blender.Desktop.csproj" />
-  <Project Path="Blender/Blender.csproj" />
+  <Project Path="Blender.Console/PrettyStick.csproj" />
+  <Project Path="Blender.Desktop/PrettyStick.Desktop.csproj" />
+  <Project Path="Blender/PrettyStick.Core.csproj" />
   <Project Path="ObjectViewer/ObjectViewer.csproj" />
 </Solution>

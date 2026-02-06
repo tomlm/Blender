@@ -1,9 +1,9 @@
 ﻿using Avalonia;
-using Blender.ViewModels;
+using PrettyStick.ViewModels;
 using System;
 using System.Linq;
 
-namespace Blender.Desktop;
+namespace PrettyStick.Desktop;
 
 class Program
 {
