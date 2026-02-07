@@ -1,88 +1,93 @@
 ﻿using Bender.ViewModels;
+using System;
 using System.CommandLine;
+using System.CommandLine.Parsing;
 using System.IO;
-using System.Threading.Tasks;
+using System.Linq;
 
 namespace Bender.Shared.Models
 {
     public class ArgumentsModel
     {
-
         private ArgumentsModel() { }
 
         public string? FilePath { get; set; }
         public DataFormat Format { get; set; } = DataFormat.Auto;
         public bool HasError { get; set; } = false;
         public string? ErrorMessage { get; set; }
+        public bool HelpRequested { get; set; } = false;
 
-        /// <summary>
-        /// Parses command line arguments.
-        /// </summary>
-        /// <param name="args">Command line arguments</param>
-        /// <returns>True if successful, false if there was an error</returns>
-        public static async Task<ArgumentsModel> ParseArgumentsAsync(string[] args)
+        private static readonly Argument<FileInfo?> FileArgument = new(
+            name: "file",
+            description: "Path to the input file to read")
         {
-            var argsModel = new ArgumentsModel();
-            // Positional argument for file (no switch required)
-            var fileArgument = new Argument<FileInfo?>(
-                name: "file",
-                description: "Path to the input file to read")
-            {
-                Arity = ArgumentArity.ZeroOrOne // Makes it optional
-            };
-
-            var xmlOption = new Option<bool>(
-                aliases: ["-x", "--xml"],
-                description: "Force XML format");
-
-            var yamlOption = new Option<bool>(
-                aliases: ["-y", "--yml"],
-                description: "Force YAML format");
-
-            var jsonOption = new Option<bool>(
-                aliases: ["-j", "--json"],
-                description: "Force JSON format");
-
-            var csvOption = new Option<bool>(
-                aliases: ["-c", "--csv"],
-                description: "Force CSV format");
-
-            var rootCommand = new RootCommand("Bender - Visualize structured text data")
-        {
-            fileArgument,
-            xmlOption,
-            yamlOption,
-            jsonOption,
-            csvOption
+            Arity = ArgumentArity.ZeroOrOne
         };
 
-            FileInfo? file = null;
-            bool isXml = false, isYaml = false, isJson = false, isCsv = false;
+        private static readonly Option<bool> XmlOption = new(["-x", "--xml"], "Force XML format");
+        private static readonly Option<bool> YamlOption = new(["-y", "--yml"], "Force YAML format");
+        private static readonly Option<bool> JsonOption = new(["-j", "--json"], "Force JSON format");
+        private static readonly Option<bool> CsvOption = new(["-c", "--csv"], "Force CSV format");
 
-            rootCommand.SetHandler((fileValue, xmlValue, yamlValue, jsonValue, csvValue) =>
-            {
-                file = fileValue;
-                isXml = xmlValue;
-                isYaml = yamlValue;
-                isJson = jsonValue;
-                isCsv = csvValue;
-            }, fileArgument, xmlOption, yamlOption, jsonOption, csvOption);
+        private static readonly RootCommand RootCommand = new("Bender - Visualize structured text data")
+        {
+            FileArgument, XmlOption, YamlOption, JsonOption, CsvOption
+        };
 
-            var parseResult = await rootCommand.InvokeAsync(args);
-            if (parseResult != 0)
+        /// <summary>
+        /// Parses command line arguments synchronously.
+        /// </summary>
+        public static ArgumentsModel ParseArguments(string[] args)
+        {
+            // Check for help request before parsing
+            if (args.Any(a => a is "-h" or "--help" or "-?" or "/?"))
             {
-                argsModel.HasError = true;
-                argsModel.ErrorMessage = "Failed to parse command line arguments.";
+                return new ArgumentsModel
+                {
+                    HelpRequested = true
+                };
             }
-            else
+
+            var parseResult = RootCommand.Parse(args);
+
+            // Check for parse errors
+            if (parseResult.Errors.Count > 0)
             {
-                argsModel.FilePath = file?.FullName;
-                argsModel.Format = DetermineFormat(isXml, isYaml, isJson, isCsv);
+                return new ArgumentsModel
+                {
+                    HasError = true,
+                    ErrorMessage = string.Join(Environment.NewLine, parseResult.Errors.Select(e => e.Message))
+                };
             }
 
-            return argsModel;
+            // Check for unrecognized options (tokens that look like switches)
+            var file = parseResult.GetValueForArgument(FileArgument);
+            var unknownSwitches = parseResult.UnmatchedTokens
+                .Concat(file?.Name is { } name && name.StartsWith('-') ? [name] : [])
+                .Where(t => t.StartsWith('-'))
+                .ToList();
+
+            if (unknownSwitches.Count > 0)
+            {
+                return new ArgumentsModel
+                {
+                    HasError = true,
+                    ErrorMessage = $"Unrecognized option(s): {string.Join(", ", unknownSwitches)}"
+                };
+            }
+
+            // Extract values directly from parse result
+            var isXml = parseResult.GetValueForOption(XmlOption);
+            var isYaml = parseResult.GetValueForOption(YamlOption);
+            var isJson = parseResult.GetValueForOption(JsonOption);
+            var isCsv = parseResult.GetValueForOption(CsvOption);
+            
+            return new ArgumentsModel
+            {
+                FilePath = file?.FullName,
+                Format = DetermineFormat(isXml, isYaml, isJson, isCsv)
+            };
         }
-
 
         /// <summary>
         /// Gets the help text for display in a dialog or console.
@@ -92,10 +97,12 @@ namespace Bender.Shared.Models
             return """
             Bender - Visualize structured text data
 
-            Usage: blender [options] <path>
+            Usage: bender [options] [file]
+
+            Arguments:
+              file                Path to the input file to read
 
             Options:
-              <path>              Path to the input file to read
               -x, --xml           Force XML format
               -y, --yml           Force YAML format
               -j, --json          Force JSON format
@@ -115,6 +122,5 @@ namespace Bender.Shared.Models
             if (isCsv) return DataFormat.Csv;
             return DataFormat.Auto;
         }
-
     }
 }

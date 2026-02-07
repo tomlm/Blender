@@ -1,7 +1,6 @@
 ﻿using Avalonia;
-using Bender.ViewModels;
+using Bender.Shared.Models;
 using System;
-using System.Linq;
 
 namespace Bender.Desktop;
 
@@ -11,10 +10,25 @@ class Program
     // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
     // yet and stuff might break.
     [STAThread]
-    public static void Main(string[] args)
+    public static int Main(string[] args)
     {
+        var argsModel = ArgumentsModel.ParseArguments(args);
+
+        if (argsModel.HelpRequested)
+        {
+            System.Console.WriteLine(ArgumentsModel.GetHelpText());
+            return 0;
+        }
+
+        if (argsModel.HasError)
+        {
+            System.Console.Error.WriteLine(argsModel.ErrorMessage);
+            return 1;
+        }
+
         BuildAvaloniaApp()
             .StartWithClassicDesktopLifetime(args);
+        return 0;
     }
 
     // Avalonia configuration, don't remove; also used by visual designer.

@@ -38,7 +38,7 @@ namespace Bender
         private async Task InitializeAsync(string[] args, MainWindowViewModel mainViewModel)
         {
             // Parse command line arguments
-            var argsModel = await ArgumentsModel.ParseArgumentsAsync(args);
+            var argsModel = ArgumentsModel.ParseArguments(args);
             
             AppViewModel.Format = argsModel.Format;
             AppViewModel.FilePath = argsModel.FilePath;

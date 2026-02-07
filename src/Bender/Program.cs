@@ -6,13 +6,20 @@ namespace Bender.Console
 {
     public static class Program
     {
-        private static async Task<int> Main(string[] args)
+        private static int Main(string[] args)
         {
-            // Parse command line arguments
-            var argsModel = await ArgumentsModel.ParseArgumentsAsync(args);
+            var argsModel = ArgumentsModel.ParseArguments(args);
+            
+            if (argsModel.HelpRequested)
+            {
+                System.Console.WriteLine(ArgumentsModel.GetHelpText());
+                return 0;
+            }
+            
             if (argsModel.HasError)
             {
-                return -1;
+                System.Console.Error.WriteLine(argsModel.ErrorMessage);
+                return 1;
             }
 
             BuildAvaloniaApp()
