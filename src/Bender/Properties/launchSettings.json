@@ -2,7 +2,7 @@
   "profiles": {
     "Blender.Console": {
       "commandName": "Project",
-      "commandLineArgs": "--dd \r\n"
+      "commandLineArgs": "s:\\big.json\r\n"
     }
   }
 }
