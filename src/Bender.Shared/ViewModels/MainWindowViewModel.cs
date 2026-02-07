@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
+using Bender.Shared.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CsvHelper;
@@ -170,7 +171,7 @@ public partial class MainWindowViewModel : ViewModelBase
         if (Window == null)
             return;
 
-        var helpText = AppViewModel.GetHelpText();
+        var helpText = ArgumentsModel.GetHelpText();
         var dialog = new Avalonia.Controls.Window
         {
             Title = "About Bender",

@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Bender.Shared.Models;
 using Bender.ViewModels;
 using Bender.Views;
 using System.Threading.Tasks;
@@ -36,9 +37,11 @@ namespace Bender
 
         private async Task InitializeAsync(string[] args, MainWindowViewModel mainViewModel)
         {
-
             // Parse command line arguments
-            await AppViewModel.ParseArgumentsAsync(args);
+            var argsModel = await ArgumentsModel.ParseArgumentsAsync(args);
+            
+            AppViewModel.Format = argsModel.Format;
+            AppViewModel.FilePath = argsModel.FilePath;
 
             // Load data based on CLI arguments
             if (!string.IsNullOrEmpty(AppViewModel.FilePath))
